@@ -64,20 +64,20 @@ class Emitter:
     def remove(self, event, listener=None):
         """ Remove the specified event, or only one of its listeners """
 
-        # trying to remove an unknown event
+        # if user tries to remove an non-existent event
         if self._events.get(event) is None:
             return False
 
-        # if no listener specified for the event, del the whole event
+        # if listener argument isn't specified, delete the whole event
         if listener is None:
             self._events = {}
             return True
 
-        # trying to remove an unknown listener
+        # if user tries to remove a non-existent listener
         if self._events[event].get(listener) is None:
             return False
 
-        # del the listener
+        # delete only the specified listener
         del self._events[event][listener]
 
         return True

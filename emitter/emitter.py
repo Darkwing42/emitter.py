@@ -33,20 +33,20 @@ class Emitter:
     def emit(self, event, *args, **kwargs):
         """ Trigger the listeners attached to the event """
 
-        # if user emits an event that doesn't exist, return
+        # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:
             return False
 
-        # trigger each callback related to the event
+        # trigger each listener attached to the event
         for callback in self._events[event]:
-            # if the callback have not enough credit, jump to next iteration
+            # if the listener have not more credit, we don't trigger it
             if self._events[event][callback] == 0:
                 continue
 
-            # trigger the current callback
+            # trigger the current listener
             callback(*args, **kwargs)
 
-            # remove one credit
+            # remove one credit to the listener
             self._events[event][callback] -= 1
 
         return True

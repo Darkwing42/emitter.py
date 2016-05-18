@@ -38,16 +38,16 @@ class Emitter:
             return False
 
         # trigger each listener attached to the event
-        for callback in self._events[event]:
+        for listener in self._events[event]:
             # if the listener have not more credit, we don't trigger it
-            if self._events[event][callback] == 0:
+            if self._events[event][listener] == 0:
                 continue
 
             # trigger the current listener
-            callback(*args, **kwargs)
+            listener(*args, **kwargs)
 
             # remove one credit to the listener
-            self._events[event][callback] -= 1
+            self._events[event][listener] -= 1
 
         return True
 

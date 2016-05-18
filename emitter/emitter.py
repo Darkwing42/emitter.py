@@ -10,18 +10,19 @@ class Emitter:
         listener will be triggered.
         """
 
-        # sanitize args
+        # sanitize arguments
         credit = int(credit)
         if not callable(listener):
             raise TypeError("{}: listener is not callable".format(listener))
 
-        # if the event do not exists, we create & init an object that will
-        # contains the callbacks, and the credit of each callback
+        # if the event doesn't exists yet, initialize it with
+        # the first listener (and its credit)
         if event not in self._events:
             self._events[event] = {listener: credit}
             return True
 
-        # if event exists, plug the listener to the event, and set its credit
+        # if event already exists, plug the listener to the event object,
+        # and set its credit
         self._events[event][listener] = credit
         return True
 

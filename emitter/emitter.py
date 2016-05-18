@@ -13,7 +13,7 @@ class Emitter:
         # sanitize args
         credit = int(credit)
         if not callable(listener):
-            raise TypeError("{}: callback is not callable".format(listener))
+            raise TypeError("{}: listener is not callable".format(listener))
 
         # if the event do not exists, we create & init an object that will
         # contains the callbacks, and the credit of each callback

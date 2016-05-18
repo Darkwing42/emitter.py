@@ -11,9 +11,7 @@ from emitter import Emitter
 def congratulate(name):
     print("Happy birthday {}!".format(name))
 
-
 emitter = Emitter()
-
 emitter.on("birthday", congratulate)
 
 emitter.emit("birthday", "Jim")

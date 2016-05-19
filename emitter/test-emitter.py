@@ -149,7 +149,7 @@ def test_events_1():
     When no events registered, events() returns an empty list.
     """
     emitter = Emitter()
-    assert emitter.events() == []
+    assert emitter.events() == set()
 
 
 def test_events_2():
@@ -218,7 +218,7 @@ def test_remove_1():
 
     emitter.remove()
 
-    assert emitter.events() == []
+    assert emitter.events() == set()
 
 
 def test_remove_2():

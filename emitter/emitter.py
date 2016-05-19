@@ -60,7 +60,7 @@ class Emitter:
     def events(self):
         """ Return all the events. """
 
-        return list(self._events.keys())
+        return set(self._events.keys())
 
     def remove(self, event=None, listener=None):
         """ Remove the specified event, or only one of its listeners """

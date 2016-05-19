@@ -65,7 +65,7 @@ emitter.on("click", {"x": 16, "y": 78})
 ```python
 # get all the registered events
 emitter.events()
-# => ["birthday", "click"]
+# => {"birthday", "click"}
 ```
 
 ### `emitter.listeners()`

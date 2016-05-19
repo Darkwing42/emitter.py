@@ -93,4 +93,11 @@ emitter.remove("click")
 emitter.remove("click", listener1)
 ```
 
+## Roadmap
 
+* Move the tests into `emitter.py/test/`
+* Add a **Tests** section about **py.test**
+* Write more tests, one file per method
+* Detail the expected return values of each method
+* Test the module, imports from outside, ...
+* Release first public version: branch:v1, tag:v1.0

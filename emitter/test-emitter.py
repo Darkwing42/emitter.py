@@ -210,17 +210,35 @@ def test_listeners_2():
 
 def test_remove_1():
     """
-    Removing a whole event.
+    Remove all the events
+    """
+    emitter = Emitter()
+    emitter.on("raccoon", callable)
+    emitter.on("fox", callable)
+
+    emitter.remove()
+
+    assert emitter.events() == []
+
+
+def test_remove_2():
+    """
+    Removing only a specified event.
     """
     emitter = Emitter()
     emitter.on("test", callable)
     emitter.on("test", str)
+    emitter.on("raccoon", callable)
+    emitter.on("raccoon", str)
+
     emitter.remove("test")
 
     assert emitter.listeners("test") == {}
+    assert callable in emitter.listeners("raccoon")
+    assert str in emitter.listeners("raccoon")
 
 
-def test_remove_2():
+def test_remove_3():
     """
     Removing a listener.
     """

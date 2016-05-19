@@ -86,7 +86,7 @@ emitter.listeners("click")
 # remove all the events
 emitter.remove()
 
-# remove all the listeners of the event
+# remove all the listeners of the specific event
 emitter.remove("click")
 
 # remove only one specific listener of the event

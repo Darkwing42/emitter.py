@@ -71,8 +71,9 @@ emitter.events()
 ### `emitter.listeners()`
 
 ```python
-# get an object containing all the listeners for an event
+# get an ordered dict containing all the listeners for an event
 # along with the credit of each listener
+# the insertion order of the listeners is preserved
 
 emitter.listeners("click")
 # =>

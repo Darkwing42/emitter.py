@@ -6,26 +6,18 @@ class Emitter:
         self._events = {}
 
     def on(self, event, listener, credit=-1):
-        """
-        Attach the listener to the event.
-
-        The credit (optional) is the greatest number of times the
-        listener could be triggered.
-        """
+        """ Attach the listener to the event. """
 
         # sanitize arguments
         credit = int(credit)
         if not callable(listener):
             raise TypeError("{}: listener is not callable".format(listener))
 
-        # if the event doesn't exists yet, initialize it with
-        # the first listener (and its credit)
+        # if the event doesn't exists yet, initialize it
         if event not in self._events:
-            self._events[event] = OrderedDict([(listener, credit)])
-            return True
+            self._events[event] = OrderedDict()
 
-        # if event already exists, plug the listener to the event object,
-        # and set its credit
+        # plug the listener to the event object and set its credit
         self._events[event][listener] = credit
         return True
 

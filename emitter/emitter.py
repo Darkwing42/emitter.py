@@ -27,7 +27,7 @@ class Emitter:
         return self.on(event, listener, 1)
 
     def emit(self, event, *args, **kwargs):
-        """ Trigger the listeners attached to the event """
+        """ Trigger the listeners attached to the event. """
 
         # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:
@@ -58,7 +58,7 @@ class Emitter:
         return set(self._events.keys())
 
     def remove(self, event=None, listener=None):
-        """ Remove all or one event, or only one precise listener """
+        """ Remove all or one event, or only one precise listener. """
 
         # remove all events
         if event is None:

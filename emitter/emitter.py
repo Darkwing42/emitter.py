@@ -1,3 +1,6 @@
+from collections import OrderedDict
+
+
 class Emitter:
     def __init__(self):
         self._events = {}
@@ -18,7 +21,7 @@ class Emitter:
         # if the event doesn't exists yet, initialize it with
         # the first listener (and its credit)
         if event not in self._events:
-            self._events[event] = {listener: credit}
+            self._events[event] = OrderedDict([(listener, credit)])
             return True
 
         # if event already exists, plug the listener to the event object,
@@ -55,7 +58,7 @@ class Emitter:
     def listeners(self, event):
         """ Return the listeners of the event. """
 
-        return self._events.get(event, {})
+        return self._events.get(event, OrderedDict())
 
     def events(self):
         """ Return all the events. """

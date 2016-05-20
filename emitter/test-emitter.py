@@ -1,4 +1,5 @@
 import pytest
+from collections import OrderedDict
 from emitter import Emitter
 
 
@@ -203,6 +204,41 @@ def test_listeners_2():
 
     assert listeners[callable] == 10
     assert listeners[list] == 42
+
+
+def test_listeners_3():
+    """
+    Check that the insertion order of the listeners is conserved
+    """
+    emitter = Emitter()
+
+    emitter.on("raccoon", bool)
+    emitter.on("raccoon", callable)
+    emitter.on("raccoon", dict)
+
+    assert type(emitter.listeners("raccoon")) is OrderedDict
+
+    listeners = list(emitter.listeners("raccoon"))
+
+    assert listeners[0] is bool
+    assert listeners[1] is callable
+    assert listeners[2] is dict
+
+    l = []
+
+    for listener in emitter.listeners("raccoon"):
+        l.append(listener)
+
+    assert l == [bool, callable, dict]
+
+
+def test_listeners_4():
+    """
+    Check that when no listeners, we also return an OrderedDict
+    """
+    emitter = Emitter()
+
+    assert type(emitter.listeners("nonexistent")) is OrderedDict
 
 
 # Testing the remove() method

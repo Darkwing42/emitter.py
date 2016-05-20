@@ -93,11 +93,25 @@ emitter.remove("click")
 emitter.remove("click", listener1)
 ```
 
+## Tests
+
+[PyTest][pytest] is used for tests. Python2 is not supported.
+If PyTest uses Python2, an exception will be raised.
+
+```sh
+$ py.test test/*
+
+# or to be sure to use python3
+$ py.test-3 test/*
+```
+
 ## Roadmap
 
-* Move the tests into `emitter.py/test/`
-* Add a **Tests** section about **py.test**
 * Write more tests, one file per method
 * Detail the expected return values of each method
 * Test the module, imports from outside, ...
 * Release first public version: branch:v1, tag:v1.0
+
+
+[pytest]: http://pytest.org/
+

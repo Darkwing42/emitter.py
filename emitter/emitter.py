@@ -19,7 +19,7 @@ class Emitter:
 
         # plug the listener to the event object and set its credit
         self._events[event][listener] = credit
-        return True
+        return
 
     def once(self, event, listener):
         """ Attach the listener to the event. """
@@ -31,7 +31,7 @@ class Emitter:
 
         # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:
-            return False
+            return
 
         # trigger each listener attached to the event
         for listener in self._events[event]:
@@ -45,7 +45,7 @@ class Emitter:
             # remove one credit to the listener
             self._events[event][listener] -= 1
 
-        return True
+        return
 
     def listeners(self, event):
         """ Return the listeners of the event. """
@@ -63,22 +63,22 @@ class Emitter:
         # remove all events
         if event is None:
             self._events = {}
-            return True
+            return
 
         # if user tries to remove an non-existent event
         if self._events.get(event) is None:
-            return False
+            return
 
         # if listener argument isn't specified, delete the whole event
         if listener is None:
             del self._events[event]
-            return True
+            return
 
         # if user tries to remove a non-existent listener
         if self._events[event].get(listener) is None:
-            return False
+            return
 
         # delete only the specified listener
         del self._events[event][listener]
 
-        return True
+        return

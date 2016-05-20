@@ -1,5 +1,5 @@
 # emitter.py
-A minimalist event emitter for Python.
+A minimalist event emitter for Python 3.
 
 ## Example
 

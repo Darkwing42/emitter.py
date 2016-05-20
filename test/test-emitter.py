@@ -142,6 +142,23 @@ def test_emit_2():
     assert l[3] == "hello"
 
 
+def test_emit_3():
+    """
+    Check that the listeners are fired in the right order.
+    """
+    emitter = Emitter()
+
+    l = []
+
+    emitter.on("raccoon", lambda: l.append(1))
+    emitter.on("raccoon", lambda: l.append(2))
+    emitter.on("raccoon", lambda: l.append(3))
+
+    emitter.emit("raccoon")
+
+    assert l == [1, 2, 3]
+
+
 # Testing the events() method
 
 

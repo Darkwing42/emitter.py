@@ -10,7 +10,7 @@ class Emitter:
         Attach the listener to the event.
 
         The credit (optional) is the greatest number of times the
-        listener will be triggered.
+        listener could be triggered.
         """
 
         # sanitize arguments
@@ -66,7 +66,7 @@ class Emitter:
         return set(self._events.keys())
 
     def remove(self, event=None, listener=None):
-        """ Remove the specified event, or only one of its listeners """
+        """ Remove all or one event, or only one precise listener """
 
         # remove all events
         if event is None:

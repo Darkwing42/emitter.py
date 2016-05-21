@@ -72,7 +72,7 @@ def test_on_70():
 
 
 def test_on_80():
-    """ Each event have its own listeners """
+    """ Each event have its own listeners. """
     emitter = Emitter()
     emitter.on("test1", callable)
     emitter.on("test2", str)
@@ -82,54 +82,45 @@ def test_on_80():
 
 
 def test_on_90():
-    """
-    Max of calls for a callback can be set using the "credit" argument.
-    """
+    """ Max of calls for a listener can be set using the "credit" argument. """
     emitter = Emitter()
     l = []
 
-    emitter.on("test", lambda x: l.append(x), 2)
+    emitter.on("test", lambda: l.append(1), 2)
 
-    emitter.emit("test", 1)
-    emitter.emit("test", 2)
-    emitter.emit("test", 3)
-    emitter.emit("test", 4)
+    emitter.emit("test")
+    emitter.emit("test")
+    emitter.emit("test")
 
     assert len(l) == 2
 
 
 def test_on_100():
-    """
-    When "credit" argument is not used, callbacks can be triggered infinitely.
-    """
+    """ When no "credit" specified, listener can be called infinitely. """
     emitter = Emitter()
     l = []
 
-    emitter.on("test", lambda x: l.append(x))
+    emitter.on("test", lambda: l.append(1))
 
-    emitter.emit("test", 1)
-    emitter.emit("test", 2)
-    emitter.emit("test", 3)
-    emitter.emit("test", 4)
+    emitter.emit("test")
+    emitter.emit("test")
+    emitter.emit("test")
 
-    assert len(l) == 4
+    assert len(l) == 3
 
 
 # Testing the once() method
 
 
-def test_once_1():
-    """
-    once() only triggers the callable one time max
-    """
+def test_once_10():
+    """ The listener is called one time maximally. """
     emitter = Emitter()
     l = []
 
-    emitter.once("test", lambda x: l.append(x))
+    emitter.once("test", lambda: l.append(1))
 
-    emitter.emit("test", 1)
-    emitter.emit("test", 2)
-    emitter.emit("test", 3)
+    emitter.emit("test")
+    emitter.emit("test")
 
     assert len(l) == 1
 
@@ -137,29 +128,26 @@ def test_once_1():
 # Testing the emit() method
 
 
-def test_emit_1():
-    """
-    Passing all the event data to the callback.
-    """
+def test_emit_10():
+    """ Event data is passed to the listeners. """
     emitter = Emitter()
-    l = []
+    params = []
 
     def func(param1, param2, unused=None, param3=None):
-        l.append(param1)
-        l.append(param2)
-        l.append(unused)
-        l.append(param3)
+        params.append(param1)
+        params.append(param2)
+        params.append(unused)
+        params.append(param3)
 
     emitter.on("test", func)
+
     emitter.emit("test", 10, 20, param3="hello")
 
-    assert l == [10, 20, None, "hello"]
+    assert params == [10, 20, None, "hello"]
 
 
-def test_emit_2():
-    """
-    Check that the listeners are fired in the right order.
-    """
+def test_emit_20():
+    """ Check that the listeners are fired in the right order. """
     emitter = Emitter()
 
     l = []
@@ -176,20 +164,17 @@ def test_emit_2():
 # Testing the events() method
 
 
-def test_events_1():
-    """
-    When no events registered, events() returns an empty list.
-    """
+def test_events_10():
+    """ When no events registered, events() returns an empty set. """
     emitter = Emitter()
+
     assert emitter.events() == set()
 
 
-def test_events_2():
-    """
-    events() returns the list of all events that have listeners registered.
-    Order is not guaranteed.
-    """
+def test_events_20():
+    """ events() returns a set containing all events. """
     emitter = Emitter()
+
     emitter.on("test1", callable)
     emitter.on("test2", callable)
     emitter.on("test3", callable)
@@ -204,18 +189,17 @@ def test_events_2():
 # Testing the listeners() method
 
 
-def test_listeners_1():
-    """
-    When passing an event that doesn't exists, returns an empty object.
-    """
+def test_listeners_10():
+    """ When passing an event that doesn't exists, returns an empty dict. """
     emitter = Emitter()
-    assert emitter.listeners("unknown_event") == {}
+
+    assert emitter.listeners("unknown") == {}
 
 
-def test_listeners_2():
+def test_listeners_20():
     """
     When passing an event, returning all callbacks attached to this event.
-    The response is a dict formatted like so:
+    The response is an OrderedDict formatted like so:
     {
         callable_1: credit_1,
         callable_2: credit_2,
@@ -223,24 +207,20 @@ def test_listeners_2():
     }
     """
     emitter = Emitter()
+
     emitter.on("test", callable, 10)
     emitter.on("test", list, 42)
 
     listeners = emitter.listeners("test")
 
-    assert isinstance(listeners, dict)
-
-    assert callable in listeners
-    assert list in listeners
+    assert isinstance(listeners, OrderedDict)
 
     assert listeners[callable] == 10
     assert listeners[list] == 42
 
 
-def test_listeners_3():
-    """
-    Check that the insertion order of the listeners is conserved
-    """
+def test_listeners_30():
+    """ Check that the insertion order of the listeners is conserved. """
     emitter = Emitter()
 
     emitter.on("raccoon", bool)
@@ -251,59 +231,42 @@ def test_listeners_3():
 
     listeners = list(emitter.listeners("raccoon"))
 
-    assert listeners[0] is bool
-    assert listeners[1] is callable
-    assert listeners[2] is dict
-
-    l = []
-
-    for listener in emitter.listeners("raccoon"):
-        l.append(listener)
-
-    assert l == [bool, callable, dict]
+    assert listeners == [bool, callable, dict]
 
 
-def test_listeners_4():
-    """
-    Check that the insertion order of the listeners is conserved
-    even after credit update
-    """
+def test_listeners_40():
+    """ Listeners insertion order should be conserved even after update. """
     emitter = Emitter()
 
     emitter.on("raccoon", bool)
     emitter.on("raccoon", callable, 10)
     emitter.on("raccoon", dict)
 
-    # update callable credit from 10 to -1 (infinity)
+    # update callable, setting credit from 10 to -1 (infinity)
     emitter.on("raccoon", callable)
-    # update bool credit from infinity to 10
+
+    # update bool, setting credit from infinity to 10
     emitter.on("raccoon", bool, 10)
 
-    l = []
+    listeners = list(emitter.listeners("raccoon"))
 
-    for listener in emitter.listeners("raccoon"):
-        l.append(listener)
-
-    assert l == [bool, callable, dict]
+    assert listeners == [bool, callable, dict]
 
 
-def test_listeners_5():
-    """
-    Check that when no listeners, we also return an OrderedDict
-    """
+def test_listeners_50():
+    """ Check that even if no listeners, an OrderedDict is returned. """
     emitter = Emitter()
 
-    assert type(emitter.listeners("nonexistent")) is OrderedDict
+    assert type(emitter.listeners("unknown")) is OrderedDict
 
 
 # Testing the remove() method
 
 
-def test_remove_1():
-    """
-    Remove all the events
-    """
+def test_remove_10():
+    """ Remove all the events. """
     emitter = Emitter()
+
     emitter.on("raccoon", callable)
     emitter.on("fox", callable)
 
@@ -312,13 +275,13 @@ def test_remove_1():
     assert emitter.events() == set()
 
 
-def test_remove_2():
-    """
-    Removing only a specified event.
-    """
+def test_remove_20():
+    """ Removing only a specified event. """
     emitter = Emitter()
+
     emitter.on("test", callable)
     emitter.on("test", str)
+
     emitter.on("raccoon", callable)
     emitter.on("raccoon", str)
 
@@ -329,11 +292,10 @@ def test_remove_2():
     assert str in emitter.listeners("raccoon")
 
 
-def test_remove_3():
-    """
-    Removing a listener.
-    """
+def test_remove_30():
+    """ Removing a listener. """
     emitter = Emitter()
+
     emitter.on("test", callable)
     emitter.on("test", str)
 

@@ -81,4 +81,8 @@ class Emitter:
         # delete only the specified listener
         del self._events[event][listener]
 
+        # if the event have no more listeners registered, delete it
+        if len(self._events[event]) == 0:
+            del self._events[event]
+
         return

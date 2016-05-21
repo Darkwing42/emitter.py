@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'emitter.py',
   packages = ['emitter'],
-  version = '1.0.2',
+  version = '1.1',
   description = 'A minimalist event emitter for Python 3.',
   author = 'titouandk',
   author_email = 'dk.titouan@gmail.com',

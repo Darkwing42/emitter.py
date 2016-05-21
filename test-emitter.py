@@ -181,6 +181,20 @@ def test_emit_30():
     assert 1 in l
 
 
+def test_emit_40():
+    """ Negative credit listeners can be triggered infinitely. """
+    emitter = Emitter()
+
+    l = []
+
+    emitter.on("event", lambda: l.append(1), -22)
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
+
+    assert len(l) == 3
+
+
 # Testing the events() method
 
 

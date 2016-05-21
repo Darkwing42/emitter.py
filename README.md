@@ -179,9 +179,13 @@ emitter.on("click", listener2, 12)
 
 [PyTest][pytest] is used for tests. Python 2 is not supported.
 
+**Install PyTest**
+
 ```sh
 $ pip install pytest
 ```
+
+**Test**
 
 ```sh
 $ py.test test/*

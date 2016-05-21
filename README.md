@@ -184,7 +184,6 @@ $ pip install pytest
 ```
 
 Python2 is not supported.
-If PyTest uses Python2, an exception will be raised.
 
 ```sh
 $ py.test test/*

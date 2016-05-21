@@ -109,6 +109,15 @@ def test_on_100():
     assert len(l) == 3
 
 
+def test_on_110():
+    """ Creating an event using False value. """
+    emitter = Emitter()
+
+    emitter.on(False, str)
+
+    assert False in emitter.events()
+
+
 # Testing the once() method
 
 
@@ -161,6 +170,17 @@ def test_emit_20():
     assert l == [1, 2, 3]
 
 
+def test_emit_30():
+    """ Emit the False event. """
+    emitter = Emitter()
+
+    l = []
+    emitter.on(False, lambda: l.append(1))
+    emitter.emit(False)
+
+    assert 1 in l
+
+
 # Testing the events() method
 
 
@@ -184,6 +204,15 @@ def test_events_20():
     assert "test1" in events
     assert "test2" in events
     assert "test3" in events
+
+
+def test_events_30():
+    """ Using the False event. """
+    emitter = Emitter()
+
+    emitter.on(False, callable)
+
+    assert False in emitter.events()
 
 
 # Testing the listeners() method
@@ -260,6 +289,15 @@ def test_listeners_50():
     assert type(emitter.listeners("unknown")) is OrderedDict
 
 
+def test_listeners_60():
+    """ Get the listeners for the False event. """
+    emitter = Emitter()
+
+    emitter.on(False, callable)
+
+    assert callable in emitter.listeners(False)
+
+
 # Testing the remove() method
 
 
@@ -306,3 +344,28 @@ def test_remove_30():
     assert callable not in listeners
     assert str in listeners
 
+
+def test_remove_40():
+    """ Remove the False event. """
+    emitter = Emitter()
+
+    emitter.on(False, callable)
+
+    assert False in emitter.events()
+
+    emitter.remove(False)
+
+    assert False not in emitter.events()
+
+
+def test_remove_50():
+    """ Remove a listener of the False event. """
+    emitter = Emitter()
+
+    emitter.on(False, callable)
+
+    assert callable in emitter.listeners(False)
+
+    emitter.remove(False, callable)
+
+    assert callable not in emitter.listeners(False)

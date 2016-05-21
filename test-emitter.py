@@ -139,25 +139,6 @@ def test_once_1():
 
 def test_emit_1():
     """
-    Triggers all the functions attached to the event.
-    """
-    emitter = Emitter()
-    a = []
-    b = []
-    c = []
-
-    emitter.on("test", lambda x: a.append(x))
-    emitter.on("test", lambda x: b.append(x))
-    emitter.on("test", lambda x: c.append(x))
-
-    emitter.emit("test", "hello")
-    assert a[0] == "hello"
-    assert b[0] == "hello"
-    assert c[0] == "hello"
-
-
-def test_emit_2():
-    """
     Passing all the event data to the callback.
     """
     emitter = Emitter()
@@ -172,13 +153,10 @@ def test_emit_2():
     emitter.on("test", func)
     emitter.emit("test", 10, 20, param3="hello")
 
-    assert l[0] == 10
-    assert l[1] == 20
-    assert l[2] is None
-    assert l[3] == "hello"
+    assert l == [10, 20, None, "hello"]
 
 
-def test_emit_3():
+def test_emit_2():
     """
     Check that the listeners are fired in the right order.
     """

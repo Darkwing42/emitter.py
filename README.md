@@ -187,11 +187,5 @@ $ py.test test*.py
 $ py.test-3 test*.py
 ```
 
-## Roadmap
-
-* Test the module, imports from outside, ...
-* Release first public version: tag v1.0
-
 
 [pytest]: http://pytest.org/
-

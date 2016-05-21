@@ -153,7 +153,7 @@ emitter.on("click", listener3)
 # ...
 ```
 
-### What if listener already registered?
+> What if listener already registered?
 
 Trying to insert a listener that is already registered only updates its credit.
 Its original position is kept.

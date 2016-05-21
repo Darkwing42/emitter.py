@@ -20,10 +20,10 @@ emitter.on("birthday", congratulate)
 emitter.emit("birthday", "Jim")
 emitter.emit("birthday", "Claire")
 
-# get the registered events
+# returns the registered events
 emitter.events()
 
-# get listeners for an event
+# returns listeners for an event
 emitter.listeners("birthday")
 
 # delete a listener

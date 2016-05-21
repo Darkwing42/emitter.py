@@ -9,43 +9,79 @@ from emitter import Emitter
 # Testing the on() method
 
 
-def test_on_1():
-    """
-    on() allows to register a callback.
-    """
+def test_on_10():
+    """ Register a listener without credit. """
     emitter = Emitter()
     emitter.on("test", callable)
-    assert emitter.listeners("test").get(callable, False)
+
+    assert callable in emitter.listeners("test")
 
 
-def test_on_2():
-    """
-    on() requires the callback to be a callable.
-    """
+def test_on_20():
+    """ Listener must be callable. """
     emitter = Emitter()
+
     with pytest.raises(TypeError):
-        emitter.on("test", "not callable")
+        emitter.on("test", False)
 
 
-def test_on_3():
-    """
-    on() allows a third parameter which is the credit.
-    """
+def test_on_30():
+    """ Register a listener along with its credit. """
     emitter = Emitter()
     emitter.on("test", callable, 3)
+
     assert emitter.listeners("test")[callable] == 3
 
 
-def test_on_4():
-    """
-    on() set the credit to -1 by default
-    """
+def test_on_40():
+    """ The default credit value is -1. """
     emitter = Emitter()
     emitter.on("test", callable)
+
     assert emitter.listeners("test")[callable] == -1
 
 
-def test_on_5():
+def test_on_50():
+    """ Negative credits are accepted, meaning infinity. """
+    emitter = Emitter()
+    emitter.on("test", callable, -10)
+
+    assert emitter.listeners("test")[callable] == -10
+
+
+def test_on_60():
+    """ Each listener must have its own credit. """
+    emitter = Emitter()
+    emitter.on("test", callable, 10)
+    emitter.on("test", str, 20)
+    emitter.on("test", int, -10)
+
+    assert emitter.listeners("test")[callable] == 10
+    assert emitter.listeners("test")[str] == 20
+    assert emitter.listeners("test")[int] == -10
+
+
+def test_on_70():
+    """ Multiple events can be registered. """
+    emitter = Emitter()
+    emitter.on("test1", callable)
+    emitter.on("test2", str)
+
+    assert callable in emitter.listeners("test1")
+    assert str in emitter.listeners("test2")
+
+
+def test_on_80():
+    """ Each event have its own listeners """
+    emitter = Emitter()
+    emitter.on("test1", callable)
+    emitter.on("test2", str)
+
+    assert str not in emitter.listeners("test1")
+    assert callable not in emitter.listeners("test2")
+
+
+def test_on_90():
     """
     Max of calls for a callback can be set using the "credit" argument.
     """
@@ -62,7 +98,7 @@ def test_on_5():
     assert len(l) == 2
 
 
-def test_on_6():
+def test_on_100():
     """
     When "credit" argument is not used, callbacks can be triggered infinitely.
     """

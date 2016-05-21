@@ -187,10 +187,10 @@ Python2 is not supported.
 If PyTest uses Python2, an exception will be raised.
 
 ```sh
-$ py.test test*.py
+$ py.test test/*
 
 # or to be sure to use python3
-$ py.test-3 test*.py
+$ py.test-3 test/*
 ```
 
 

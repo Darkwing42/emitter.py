@@ -177,13 +177,11 @@ emitter.on("click", listener2, 12)
 
 ## Tests
 
-[PyTest][pytest] is used for tests.
+[PyTest][pytest] is used for tests. Python 2 is not supported.
 
 ```sh
 $ pip install pytest
 ```
-
-Python2 is not supported.
 
 ```sh
 $ py.test test/*

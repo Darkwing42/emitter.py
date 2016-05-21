@@ -71,7 +71,7 @@ emitter.on("click", {"x": 16, "y": 78})
 ### `emitter.events()`
 
 ```python
-# get all the registered events
+# returns a set containing all the registered events
 emitter.events()
 # => {"birthday", "click"}
 ```
@@ -79,8 +79,8 @@ emitter.events()
 ### `emitter.listeners()`
 
 ```python
-# get an ordered dict containing all the listeners for an event
-# along with the credit of each listener
+# returns an ordered dict containing listeners for the event
+# each listener comes along with its credit
 # the insertion order of the listeners is preserved
 
 emitter.listeners("click")

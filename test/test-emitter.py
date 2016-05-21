@@ -251,6 +251,30 @@ def test_listeners_3():
 
 def test_listeners_4():
     """
+    Check that the insertion order of the listeners is conserved
+    even after credit update
+    """
+    emitter = Emitter()
+
+    emitter.on("raccoon", bool)
+    emitter.on("raccoon", callable, 10)
+    emitter.on("raccoon", dict)
+
+    # update callable credit from 10 to -1 (infinity)
+    emitter.on("raccoon", callable)
+    # update bool credit from infinity to 10
+    emitter.on("raccoon", bool, 10)
+
+    l = []
+
+    for listener in emitter.listeners("raccoon"):
+        l.append(listener)
+
+    assert l == [bool, callable, dict]
+
+
+def test_listeners_5():
+    """
     Check that when no listeners, we also return an OrderedDict
     """
     emitter = Emitter()

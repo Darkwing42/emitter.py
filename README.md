@@ -109,9 +109,8 @@ $ py.test-3 test/*
 ## Roadmap
 
 * Write more tests, one file per method
-* Detail the expected return values of each method
 * Test the module, imports from outside, ...
-* Release first public version: branch:v1, tag:v1.0
+* Release first public version: tag v1.0
 
 
 [pytest]: http://pytest.org/

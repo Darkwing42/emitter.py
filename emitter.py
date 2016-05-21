@@ -1,4 +1,4 @@
-from collections import OrderedDict
+import collections
 
 
 class Emitter:
@@ -15,7 +15,7 @@ class Emitter:
 
         # if the event doesn't exists yet, initialize it
         if event not in self._events:
-            self._events[event] = OrderedDict()
+            self._events[event] = collections.OrderedDict()
 
         # plug the listener to the event object and set its credit
         self._events[event][listener] = credit
@@ -51,7 +51,7 @@ class Emitter:
     def listeners(self, event):
         """ Return the listeners of the event. """
 
-        return self._events.get(event, OrderedDict())
+        return self._events.get(event, collections.OrderedDict())
 
     def events(self):
         """ Return all the events. """

@@ -181,10 +181,10 @@ emitter.on("click", listener2, 12)
 If PyTest uses Python2, an exception will be raised.
 
 ```sh
-$ py.test test/*
+$ py.test test*.py
 
 # or to be sure to use python3
-$ py.test-3 test/*
+$ py.test-3 test*.py
 ```
 
 ## Roadmap

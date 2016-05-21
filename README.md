@@ -19,7 +19,15 @@ emitter.on("birthday", congratulate)
 # emit the "birthday" event along with data
 emitter.emit("birthday", "Jim")
 emitter.emit("birthday", "Claire")
-emitter.emit("birthday", "William")
+
+# get the registered events
+emitter.events()
+
+# get listeners for an event
+emitter.listeners("birthday")
+
+# delete a listener
+emitter.remove("birthday", congratulate)
 ```
 
 ## Methods overview
@@ -181,7 +189,6 @@ $ py.test-3 test/*
 
 ## Roadmap
 
-* Write more tests, one file per method
 * Test the module, imports from outside, ...
 * Release first public version: tag v1.0
 

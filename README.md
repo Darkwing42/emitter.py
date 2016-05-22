@@ -62,6 +62,9 @@ emitter.on("click", listener, 3)
 ```python
 # the listener will be triggered only once
 emitter.once("click", listener)
+
+# equivalent using emitter.on()
+emitter.on("click", listener, 1)
 ```
 
 ### `emitter.emit()`

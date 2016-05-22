@@ -180,6 +180,8 @@ emitter.on("click", listener1)
 emitter.once("click", listener2)
 emitter.on("click", listener3)
 emitter.on("click", listener2, 12)
+
+emitter.emit("click")
 ```
 
 ## Tests

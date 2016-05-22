@@ -3,9 +3,6 @@ A minimalist event emitter for Python 3.
 
 ```sh
 $ pip install emitter.py
-
-# or to be sure you use python 3
-$ pip3 install emitter.py
 ```
 
 ## Example

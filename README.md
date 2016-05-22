@@ -39,12 +39,12 @@ emitter.remove("birthday", congratulate)
 
 ## Methods overview
 
-* `emitter.on()`
-* `emitter.once()`
-* `emitter.emit()`
+* `emitter.on(event, listener[, credit])`
+* `emitter.once(event, listener)`
+* `emitter.emit(event[, data...])`
 * `emitter.events()`
-* `emitter.listeners()`
-* `emitter.remove()`
+* `emitter.listeners(event)`
+* `emitter.remove([event][, listener])`
 
 ### `emitter.on()`
 

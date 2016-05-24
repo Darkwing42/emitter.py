@@ -73,7 +73,7 @@ emitter.on("click")
 
 # data can be passed when event is fired
 emitter.on("click", {"x": 16, "y": 78})
-emitter.on("click", x=28, y=72)
+emitter.on("click", 28, y=72)
 ```
 
 ### `emitter.events()`

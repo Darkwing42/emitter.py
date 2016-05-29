@@ -140,7 +140,7 @@ The listeners are called in the order in which they were registered.
 
 ```python
 emitter.on("click", listener1)
-emitter.once("click", listener2)
+emitter.on("click", listener2)
 emitter.on("click", listener3)
 
 # on a "click" event, these 3 listeners are called

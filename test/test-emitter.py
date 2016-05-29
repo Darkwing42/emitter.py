@@ -118,22 +118,6 @@ def test_on_110():
     assert False in emitter.events()
 
 
-# Testing the once() method
-
-
-def test_once_10():
-    """ The listener is called one time maximally. """
-    emitter = Emitter()
-    l = []
-
-    emitter.once("test", lambda: l.append(1))
-
-    emitter.emit("test")
-    emitter.emit("test")
-
-    assert len(l) == 1
-
-
 # Testing the emit() method
 
 

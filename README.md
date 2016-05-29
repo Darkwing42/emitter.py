@@ -37,7 +37,6 @@ emitter.remove("birthday", congratulate)
 ## Methods overview
 
 * `emitter.on(event, listener[, credit])`
-* `emitter.once(event, listener)`
 * `emitter.emit(event[, data...])`
 * `emitter.events()`
 * `emitter.listeners(event)`
@@ -52,16 +51,6 @@ emitter.on("click", listener)
 # specify the credit
 # max number of times the listener can be triggered
 emitter.on("click", listener, 3)
-```
-
-### `emitter.once()`
-
-```python
-# the listener will be triggered only once
-emitter.once("click", listener)
-
-# equivalent using emitter.on()
-emitter.on("click", listener, 1)
 ```
 
 ### `emitter.emit()`
@@ -126,24 +115,15 @@ emitter.emit("click") # nothing happens
 
 By default, the credit is `-1`. Negative values mean infinity.
 
-A shortcut to register a listener called 1 time max is using the `emitter.once()` method.
-
-```python
-# equivalent for emitter.on("120", die, 1)
-cat.once("120", die)
-
-cat.emit("120")
-cat.emit("120") # nothing happens
-```
-
-The credit of a listener can be updated using `on()` or `once()`.
+The credit of a listener can be updated using the `on()` method.
 
 If the listener already exists, its credit is updated.
 
 ```python
-cat.once("fall", die)
+# our cat can only die once
+cat.on("fall", die, 1)
 
-# wait, a cat has 9 lives
+# wait... a cat has 9 lives!
 # we update the credit of the die listener
 cat.on("fall", die, 9)
 
@@ -174,11 +154,11 @@ emitter.on("click", listener3)
 Trying to insert a listener that is already registered only updates its credit.
 Its original position is kept.
 
-In this example, `listener2` will still be called secondly, but its credit is updated from 1 (once) to 12.
+In this example, `listener2` will still be called secondly, but its credit is updated from 1 to 12.
 
 ```python
 emitter.on("click", listener1)
-emitter.once("click", listener2)
+emitter.on("click", listener2)
 emitter.on("click", listener3)
 emitter.on("click", listener2, 12)
 

@@ -21,11 +21,6 @@ class Emitter:
         self._events[event][listener] = credit
         return
 
-    def once(self, event, listener):
-        """ Attach the listener to the event. """
-
-        return self.on(event, listener, 1)
-
     def emit(self, event, *args, **kwargs):
         """ Trigger the listeners attached to the event. """
 

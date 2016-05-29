@@ -112,7 +112,7 @@ emitter.remove("click", listener1)
 
 ## Listeners credits
 
-The credit of a listener determines the maximal number of times it can be fired.
+Each listener have a credit. It is the maximal number of times the listener can be called.
 
 ```python
 # listener will be called 3 times max on "click" events

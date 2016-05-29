@@ -156,7 +156,7 @@ cat.on("fall", die)
 
 ## Order of insertion
 
-The listeners order of insertion determines the order in which they will be called when the event occures.
+The listeners are called in the order in which they were registered.
 
 ```python
 emitter.on("click", listener1)

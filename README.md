@@ -14,14 +14,8 @@ from emitter import Emitter
 def congratulate(name):
     print("Happy birthday {}!".format(name))
 
-# create an emitter
 emitter = Emitter()
-
-# register the listener for the "birthday" event
 emitter.on("birthday", congratulate)
-
-# when a listener throws an error, the "error" event is triggered
-emitter.on("error", print)
 
 # emit the "birthday" event along with data
 emitter.emit("birthday", "Jim")

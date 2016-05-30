@@ -175,8 +175,7 @@ The exception is passed to the listeners of the `"error"` event.
 
 Even if a listener throws an error, a credit is counted.
 
-```python3
-
+```python
 def listener(*args, **kwargs):
     raise Exception()
 

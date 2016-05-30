@@ -118,6 +118,8 @@ emitter.emit("click") # nothing happens
 
 By default, the credit is `-1`. Negative values mean infinity.
 
+### Update listener's credit
+
 The credit of a listener can be updated using the `on()` method.
 
 If the listener already exists, its credit is updated.
@@ -137,7 +139,7 @@ cat.emit("fall") # still 7 lives
 cat.on("fall", die)
 ```
 
-To retrieve the credits of a listener:
+### Get listener's credit
 
 ```python
 cat.on("fall", die, 9)

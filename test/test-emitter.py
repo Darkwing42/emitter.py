@@ -208,6 +208,20 @@ def test_emit_60():
     assert emitter.listeners("event")[listener] == 4
 
 
+def test_emit_70():
+    """ If error listeners throw exceptions, avoid infinite recursion. """
+    emitter = Emitter()
+
+    def listener(*args, **kwargs):
+        raise Exception()
+
+    emitter.on("event", listener)
+    emitter.on("error", listener)
+
+    with pytest.raises(RecursionError):
+        emitter.emit("event")
+
+
 # Testing the events() method
 
 

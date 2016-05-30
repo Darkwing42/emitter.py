@@ -188,7 +188,7 @@ emitter.on("error", logerror)
 emitter.emit("click") # logerror
 
 # our listener thrown an exception, but one credit is counted anyway
-emitter.listeners("click")[raise_exception] == 9
+emitter.listeners("click")[listener] == 9
 ```
 
 ## Tests

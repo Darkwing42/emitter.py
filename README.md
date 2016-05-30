@@ -137,6 +137,15 @@ cat.emit("fall") # still 7 lives
 cat.on("fall", die)
 ```
 
+To retrieve the credits of a listener:
+
+```python
+cat.on("fall", die, 9)
+
+cat.listeners("fall")[die] == 9
+```
+
+
 ## Order of insertion
 
 The listeners are called in the order in which they were registered.

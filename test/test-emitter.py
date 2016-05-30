@@ -179,6 +179,35 @@ def test_emit_40():
     assert len(l) == 3
 
 
+def test_emit_50():
+    """ 'error' event is emitted when listener throws exception. """
+    emitter = Emitter()
+
+    def listener(*args, **kwargs):
+        raise Exception()
+
+    l = []
+
+    emitter.on("thing", listener)
+    emitter.on("error", lambda err: l.append(err))
+    emitter.emit("thing")
+
+    assert len(l) == 1
+
+
+def test_emit_60():
+    """ Credit is updated even if listener throws exception. """
+    emitter = Emitter()
+
+    def listener(*args, **kwargs):
+        raise Exception()
+
+    emitter.on("event", listener, 5)
+    emitter.emit("event")
+
+    assert emitter.listeners("event")[listener] == 4
+
+
 # Testing the events() method
 
 

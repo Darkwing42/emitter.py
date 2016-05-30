@@ -35,7 +35,10 @@ class Emitter:
                 continue
 
             # trigger the current listener
-            listener(*args, **kwargs)
+            try:
+                listener(*args, **kwargs)
+            except Exception as err:
+                self.emit("error", err)
 
             # remove one credit to the listener
             if credit > 0:

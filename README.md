@@ -20,6 +20,9 @@ emitter = Emitter()
 # register the listener for the "birthday" event
 emitter.on("birthday", congratulate)
 
+# when a listener throws an error, the "error" event is triggered
+emitter.on("error", print)
+
 # emit the "birthday" event along with data
 emitter.emit("birthday", "Jim")
 emitter.emit("birthday", "Claire")
@@ -163,6 +166,30 @@ emitter.on("click", listener3)
 emitter.on("click", listener2, 12)
 
 emitter.emit("click")
+```
+
+## Error handling
+
+When a listener throws an error, the `"error"` event is emitted.
+The exception is passed to the listeners of the `"error"` event.
+
+Even if a listener throws an error, a credit is counted.
+
+```python3
+
+def listener(*args, **kwargs):
+    raise Exception()
+
+def logerror(err):
+    log("Hello, this is error {}".format(err))
+
+emitter.on("click", listener, 10)
+emitter.on("error", logerror)
+
+emitter.emit("click") # logerror
+
+# our listener thrown an exception, but one credit is counted anyway
+emitter.listeners("click")[raise_exception] == 9
 ```
 
 ## Tests

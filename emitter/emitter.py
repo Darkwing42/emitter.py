@@ -41,7 +41,7 @@ class Emitter:
                     raise RecursionError("error listener throws an error")
                 self.emit("error", err)
 
-            # remove one credit to the listener
+            # subtract a credit to the listener
             if self._events[event][listener] > 0:
                 self._events[event][listener] -= 1
 

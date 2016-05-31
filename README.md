@@ -190,7 +190,7 @@ Even if a listener throws an error, a credit is counted.
 
 ```python
 def listener(*args, **kwargs):
-    raise Exception()
+    raise Exception("This is an error")
 
 emitter.on("click", listener, 10)
 emitter.on("error", print)

@@ -171,7 +171,7 @@ Trying to insert a listener that is already existing only updates its credit.
 Its original position is kept.
 
 In this example, the `listener2` credit is updated from -1 (infinity) to 12.
-But the listener will still be called secondly.
+The listener will still be called secondly.
 
 ```python
 emitter.on("click", listener1)

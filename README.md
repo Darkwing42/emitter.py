@@ -37,7 +37,7 @@ emitter.remove("birthday", congratulate)
 ## Methods overview
 
 * `emitter.on(event, listener[, credit])`
-* `emitter.emit(event[, data...])`
+* `emitter.emit(event[, *args][, **kwargs])`
 * `emitter.events()`
 * `emitter.listeners(event)`
 * `emitter.remove([event][, listener])`

@@ -116,6 +116,8 @@ emitter.emit("click") # nothing happens
 
 By default, the credit is `-1` (negative values mean infinity).
 
+When a listener have no more credits, it is removed.
+
 ### Update listener's credit
 
 The credit of a listener can be updated using the `on()` method.

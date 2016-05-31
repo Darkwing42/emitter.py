@@ -8,8 +8,11 @@ class Emitter:
     def on(self, event, listener, credit=-1):
         """ Attach the listener to the event. """
 
-        # sanitize arguments
+        # sanitize arguments types and values
         credit = int(credit)
+        if credit == 0:
+            return
+
         if not callable(listener):
             raise TypeError("{}: listener is not callable".format(listener))
 
@@ -29,11 +32,7 @@ class Emitter:
             return
 
         # trigger each listener attached to the event
-        for listener, credit in self._events[event].items():
-            # if the listener have not more credit, we don't trigger it
-            if credit == 0:
-                continue
-
+        for listener in self._events[event]:
             # trigger the current listener
             try:
                 listener(*args, **kwargs)
@@ -43,8 +42,12 @@ class Emitter:
                 self.emit("error", err)
 
             # remove one credit to the listener
-            if credit > 0:
+            if self._events[event][listener] > 0:
                 self._events[event][listener] -= 1
+
+            # if no more credit, remove listener
+            if self._events[event][listener] == 0:
+                self.remove(event, listener)
 
         return
 

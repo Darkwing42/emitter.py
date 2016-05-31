@@ -222,6 +222,36 @@ def test_emit_70():
         emitter.emit("event")
 
 
+def test_emit_80():
+    """ When a listener have no more credits, delete it. """
+    emitter = Emitter()
+
+    emitter.on("evt", callable, 3)
+
+    assert callable in emitter.listeners("evt")
+
+    emitter.emit("evt")
+    emitter.emit("evt")
+    emitter.emit("evt")
+
+    assert callable not in emitter.listeners("evt")
+
+
+def test_emit_90():
+    """ No errors should be triggered when a listener have no more credit. """
+    emitter = Emitter()
+
+    l = []
+
+    emitter.on("evt", str, 2)
+    emitter.on("error", lambda: l.append(1))
+    emitter.emit("evt")
+    emitter.emit("evt")
+    emitter.emit("evt")
+
+    assert len(l) == 0
+
+
 # Testing the events() method
 
 

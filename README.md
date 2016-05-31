@@ -107,9 +107,10 @@ Each listener have a credit. It is the maximal number of times the listener can 
 # listener will be called 3 times max on "click" events
 emitter.on("click", listener, 3)
 
-emitter.emit("click")
-emitter.emit("click")
-emitter.emit("click")
+emitter.emit("click") # listener fired
+emitter.emit("click") # listener fired
+emitter.emit("click") # listener fired, then removed
+
 emitter.emit("click") # nothing happens
 ```
 

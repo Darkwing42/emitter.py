@@ -15,9 +15,10 @@ from emitter import Emitter
 
 # create a listener
 def congratulate(name):
-    print("Happy birthday {}!".format(name))
+    print("Happy birthday", name)
 
 emitter = Emitter()
+
 emitter.on("birthday", congratulate)
 
 # emit the "birthday" event along with data

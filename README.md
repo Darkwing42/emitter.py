@@ -60,11 +60,11 @@ emitter.on("click", listener, 3)
 ```python
 # basic signature
 # no data passed to the listeners
-emitter.on("click")
+emitter.emit("click")
 
 # data can be passed when event is fired
-emitter.on("click", {"x": 16, "y": 78})
-emitter.on("click", 28, y=72)
+emitter.emit("click", {"x": 16, "y": 78})
+emitter.emit("click", 28, y=72)
 ```
 
 ### `emitter.events()`

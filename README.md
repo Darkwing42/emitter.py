@@ -192,13 +192,10 @@ Even if a listener throws an error, a credit is counted.
 def listener(*args, **kwargs):
     raise Exception()
 
-def logerror(err):
-    log("Hello, this is error {}".format(err))
-
 emitter.on("click", listener, 10)
-emitter.on("error", logerror)
+emitter.on("error", print)
 
-emitter.emit("click") # logerror
+emitter.emit("click") # display error
 
 # our listener thrown an exception, but one credit is counted anyway
 emitter.listeners("click")[listener] == 9

@@ -178,7 +178,7 @@ emitter.on("click", listener2)
 emitter.on("click", listener3)
 emitter.on("click", listener2, 12)
 
-emitter.emit("click")
+emitter.emit("click") # call listener1, listener2, listener3
 ```
 
 ## Error handling

@@ -118,7 +118,7 @@ emitter.emit("click") # nothing happens
 
 By default, the credit is `-1` (negative values mean infinity).
 
-When a listener have no more credits, it is removed.
+When a listener have no more credits, it is removed automatically.
 
 ### Update listener's credit
 
@@ -170,7 +170,8 @@ emitter.on("click", listener3)
 Trying to insert a listener that is already existing only updates its credit.
 Its original position is kept.
 
-In this example, `listener2` will still be called secondly, but its credit is updated from -1 (infinity) to 12.
+In this example, the `listener2` credit is updated from -1 (infinity) to 12.
+But the listener will still be called secondly.
 
 ```python
 emitter.on("click", listener1)

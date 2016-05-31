@@ -19,7 +19,7 @@ def congratulate(name):
 
 emitter = Emitter()
 
-# register an event
+# register the congratulate listener for the "birthday" event
 emitter.on("birthday", congratulate)
 
 # emit the event, passing some data

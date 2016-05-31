@@ -118,6 +118,15 @@ def test_on_110():
     assert False in emitter.events()
 
 
+def test_on_120():
+    """ Listener with credit equals to 0 is not inserted. """
+    emitter = Emitter()
+
+    emitter.on("evt", str, 0)
+
+    assert str not in emitter.listeners("evt")
+
+
 # Testing the emit() method
 
 

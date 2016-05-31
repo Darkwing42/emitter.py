@@ -167,7 +167,7 @@ emitter.on("click", listener3)
 
 > What if listener already registered?
 
-Trying to insert a listener that is already registered only updates its credit.
+Trying to insert a listener that is already existing only updates its credit.
 Its original position is kept.
 
 In this example, `listener2` will still be called secondly, but its credit is updated from -1 (infinity) to 12.

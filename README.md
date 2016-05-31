@@ -114,7 +114,7 @@ emitter.emit("click") # listener fired, then removed
 emitter.emit("click") # nothing happens
 ```
 
-By default, the credit is `-1`. Negative values mean infinity.
+By default, the credit is `-1` (negative values mean infinity).
 
 ### Update listener's credit
 

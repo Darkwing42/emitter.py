@@ -2,5 +2,4 @@
 setup.cfg
 setup.py
 emitter/__init__.py
-emitter/emitter.py
 test/test-emitter.py

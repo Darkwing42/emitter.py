@@ -30,7 +30,7 @@ def test_on_2():
     """
     emitter = Emitter()
 
-    # checking type
+    # checking type
     assert isinstance(emitter.on(), set)
 
     # checking value
@@ -61,7 +61,7 @@ def test_on_4():
     """
     emitter = Emitter()
 
-    # checking type
+    # checking type
     assert isinstance(emitter.on("nonexistent"), OrderedDict)
 
     # checking value

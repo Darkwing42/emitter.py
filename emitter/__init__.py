@@ -8,10 +8,22 @@ class Emitter:
     def __init__(self):
         self._events = {}
 
-    def on(self, event, listener, credit=-1):
-        """ Attach the listener to the event. """
+    def on(self, event=None, listener=None, credit=-1):
+        """
+        Attach listeners to events.
+        See events and listeners currently registered.
+        """
+
+        if event is None:
+            # list all the registered events
+            return set(self._events.keys())
+
+        if listener is None:
+            # return all the listeners of the event
+            return self._events.get(event, collections.OrderedDict())
 
         # sanitize arguments types and values
+
         credit = int(credit)
         if credit == 0:
             return
@@ -28,7 +40,9 @@ class Emitter:
         return
 
     def emit(self, event, *args, **kwargs):
-        """ Trigger the listeners attached to the event. """
+        """
+        Call the listeners attached to the event.
+        """
 
         # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:
@@ -50,22 +64,14 @@ class Emitter:
 
             # if no more credit, remove listener
             if self._events[event][listener] == 0:
-                self.remove(event, listener)
+                self.off(event, listener)
 
         return
 
-    def listeners(self, event):
-        """ Return the listeners of the event. """
-
-        return self._events.get(event, collections.OrderedDict())
-
-    def events(self):
-        """ Return all the events. """
-
-        return set(self._events.keys())
-
-    def remove(self, event=None, listener=None):
-        """ Remove all or one event, or only one precise listener. """
+    def off(self, event=None, listener=None):
+        """
+        Remove events or listeners.
+        """
 
         # remove all events
         if event is None:

@@ -227,7 +227,7 @@ def test_emit_70():
     emitter.on("event", listener)
     emitter.on("error", listener)
 
-    with pytest.raises(RecursionError):
+    with pytest.raises(Exception):
         emitter.emit("event")
 
 

@@ -41,7 +41,7 @@ class Emitter:
                 listener(*args, **kwargs)
             except Exception as err:
                 if event == "error":
-                    raise RecursionError("error listener throws an error")
+                    raise err
                 self.emit("error", err)
 
             # subtract a credit to the listener

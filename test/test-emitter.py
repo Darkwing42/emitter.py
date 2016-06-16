@@ -14,7 +14,7 @@ def test_on_10():
     emitter = Emitter()
     emitter.on("test", callable)
 
-    assert callable in emitter.listeners("test")
+    assert callable in emitter.get("test")
 
 
 def test_on_20():
@@ -30,7 +30,7 @@ def test_on_30():
     emitter = Emitter()
     emitter.on("test", callable, 3)
 
-    assert emitter.listeners("test")[callable] == 3
+    assert emitter.get("test", callable) == 3
 
 
 def test_on_40():
@@ -38,7 +38,7 @@ def test_on_40():
     emitter = Emitter()
     emitter.on("test", callable)
 
-    assert emitter.listeners("test")[callable] == -1
+    assert emitter.get("test", callable) == -1
 
 
 def test_on_50():
@@ -46,7 +46,7 @@ def test_on_50():
     emitter = Emitter()
     emitter.on("test", callable, -10)
 
-    assert emitter.listeners("test")[callable] == -10
+    assert emitter.get("test", callable) == -10
 
 
 def test_on_60():
@@ -56,9 +56,9 @@ def test_on_60():
     emitter.on("test", str, 20)
     emitter.on("test", int, -10)
 
-    assert emitter.listeners("test")[callable] == 10
-    assert emitter.listeners("test")[str] == 20
-    assert emitter.listeners("test")[int] == -10
+    assert emitter.get("test", callable) == 10
+    assert emitter.get("test", str) == 20
+    assert emitter.get("test", int) == -10
 
 
 def test_on_70():
@@ -67,8 +67,8 @@ def test_on_70():
     emitter.on("test1", callable)
     emitter.on("test2", str)
 
-    assert callable in emitter.listeners("test1")
-    assert str in emitter.listeners("test2")
+    assert callable in emitter.get("test1")
+    assert str in emitter.get("test2")
 
 
 def test_on_80():
@@ -77,8 +77,8 @@ def test_on_80():
     emitter.on("test1", callable)
     emitter.on("test2", str)
 
-    assert str not in emitter.listeners("test1")
-    assert callable not in emitter.listeners("test2")
+    assert str not in emitter.get("test1")
+    assert callable not in emitter.get("test2")
 
 
 def test_on_90():
@@ -115,7 +115,7 @@ def test_on_110():
 
     emitter.on(False, str)
 
-    assert False in emitter.events()
+    assert False in emitter.get()
 
 
 def test_on_120():
@@ -124,7 +124,7 @@ def test_on_120():
 
     emitter.on("evt", str, 0)
 
-    assert str not in emitter.listeners("evt")
+    assert str not in emitter.get("evt")
 
 
 # Testing the emit() method
@@ -214,7 +214,7 @@ def test_emit_60():
     emitter.on("event", listener, 5)
     emitter.emit("event")
 
-    assert emitter.listeners("event")[listener] == 4
+    assert emitter.get("event", listener) == 4
 
 
 def test_emit_70():
@@ -237,13 +237,13 @@ def test_emit_80():
 
     emitter.on("evt", callable, 3)
 
-    assert callable in emitter.listeners("evt")
+    assert callable in emitter.get("evt")
 
     emitter.emit("evt")
     emitter.emit("evt")
     emitter.emit("evt")
 
-    assert callable not in emitter.listeners("evt")
+    assert callable not in emitter.get("evt")
 
 
 def test_emit_90():
@@ -265,10 +265,10 @@ def test_emit_90():
 
 
 def test_events_10():
-    """ When no events registered, events() returns an empty set. """
+    """ When no events registered, events() returns an empty obj. """
     emitter = Emitter()
 
-    assert emitter.events() == set()
+    assert emitter.get() == {}
 
 
 def test_events_20():
@@ -279,7 +279,7 @@ def test_events_20():
     emitter.on("test2", callable)
     emitter.on("test3", callable)
 
-    events = emitter.events()
+    events = emitter.get()
 
     assert "test1" in events
     assert "test2" in events
@@ -292,7 +292,7 @@ def test_events_30():
 
     emitter.on(False, callable)
 
-    assert False in emitter.events()
+    assert False in emitter.get()
 
 
 # Testing the listeners() method
@@ -302,7 +302,7 @@ def test_listeners_10():
     """ When passing an event that doesn't exists, returns an empty dict. """
     emitter = Emitter()
 
-    assert emitter.listeners("unknown") == {}
+    assert emitter.get("unknown") == {}
 
 
 def test_listeners_20():
@@ -320,7 +320,7 @@ def test_listeners_20():
     emitter.on("test", callable, 10)
     emitter.on("test", list, 42)
 
-    listeners = emitter.listeners("test")
+    listeners = emitter.get("test")
 
     assert isinstance(listeners, OrderedDict)
 
@@ -336,9 +336,9 @@ def test_listeners_30():
     emitter.on("raccoon", callable)
     emitter.on("raccoon", dict)
 
-    assert type(emitter.listeners("raccoon")) is OrderedDict
+    assert type(emitter.get("raccoon")) is OrderedDict
 
-    listeners = list(emitter.listeners("raccoon"))
+    listeners = list(emitter.get("raccoon"))
 
     assert listeners == [bool, callable, dict]
 
@@ -357,7 +357,7 @@ def test_listeners_40():
     # update bool, setting credit from infinity to 10
     emitter.on("raccoon", bool, 10)
 
-    listeners = list(emitter.listeners("raccoon"))
+    listeners = list(emitter.get("raccoon"))
 
     assert listeners == [bool, callable, dict]
 
@@ -366,7 +366,7 @@ def test_listeners_50():
     """ Check that even if no listeners, an OrderedDict is returned. """
     emitter = Emitter()
 
-    assert type(emitter.listeners("unknown")) is OrderedDict
+    assert type(emitter.get("unknown")) is OrderedDict
 
 
 def test_listeners_60():
@@ -375,7 +375,7 @@ def test_listeners_60():
 
     emitter.on(False, callable)
 
-    assert callable in emitter.listeners(False)
+    assert callable in emitter.get(False)
 
 
 # Testing the remove() method
@@ -388,9 +388,9 @@ def test_remove_10():
     emitter.on("raccoon", callable)
     emitter.on("fox", callable)
 
-    emitter.remove()
+    emitter.off()
 
-    assert emitter.events() == set()
+    assert emitter.get() == {}
 
 
 def test_remove_20():
@@ -403,11 +403,11 @@ def test_remove_20():
     emitter.on("raccoon", callable)
     emitter.on("raccoon", str)
 
-    emitter.remove("test")
+    emitter.off("test")
 
-    assert emitter.listeners("test") == {}
-    assert callable in emitter.listeners("raccoon")
-    assert str in emitter.listeners("raccoon")
+    assert emitter.get("test") == {}
+    assert callable in emitter.get("raccoon")
+    assert str in emitter.get("raccoon")
 
 
 def test_remove_30():
@@ -417,9 +417,9 @@ def test_remove_30():
     emitter.on("test", callable)
     emitter.on("test", str)
 
-    emitter.remove("test", callable)
+    emitter.off("test", callable)
 
-    listeners = emitter.listeners("test")
+    listeners = emitter.get("test")
 
     assert callable not in listeners
     assert str in listeners
@@ -431,11 +431,11 @@ def test_remove_40():
 
     emitter.on(False, callable)
 
-    assert False in emitter.events()
+    assert False in emitter.get()
 
-    emitter.remove(False)
+    emitter.off(False)
 
-    assert False not in emitter.events()
+    assert False not in emitter.get()
 
 
 def test_remove_50():
@@ -444,8 +444,8 @@ def test_remove_50():
 
     emitter.on(False, callable)
 
-    assert callable in emitter.listeners(False)
+    assert callable in emitter.get(False)
 
-    emitter.remove(False, callable)
+    emitter.off(False, callable)
 
-    assert callable not in emitter.listeners(False)
+    assert callable not in emitter.get(False)

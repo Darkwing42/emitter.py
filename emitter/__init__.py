@@ -50,21 +50,23 @@ class Emitter:
 
             # if no more credit, remove listener
             if self._events[event][listener] == 0:
-                self.remove(event, listener)
+                self.off(event, listener)
 
         return
 
-    def listeners(self, event):
-        """ Return the listeners of the event. """
+    def get(self, event=None, listener=None):
+        if event is None:
+            return self._events
 
-        return self._events.get(event, collections.OrderedDict())
+        if self._events.get(event) is None:
+            return collections.OrderedDict()
 
-    def events(self):
-        """ Return all the events. """
+        if listener is None:
+            return self._events[event]
 
-        return set(self._events.keys())
+        return self._events[event].get(listener, None)
 
-    def remove(self, event=None, listener=None):
+    def off(self, event=None, listener=None):
         """ Remove all or one event, or only one precise listener. """
 
         # remove all events

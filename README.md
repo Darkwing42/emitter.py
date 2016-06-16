@@ -10,27 +10,14 @@ $ pip3 install emitter.py
 ```python
 from emitter import Emitter
 
-# create a listener
-def congratulate(name):
-    print("Happy birthday", name)
+def congratulate(name, age):
+    print("Happy", age, "years", name, "!")
 
 emitter = Emitter()
-
-# register the congratulate listener for the "birthday" event
 emitter.on("birthday", congratulate)
 
-# emit the event, passing some data
-emitter.emit("birthday", "Frank")
-emitter.emit("birthday", "Claire")
-
-# returns the registered events
-emitter.get()
-
-# returns listeners for an event
-emitter.get("birthday")
-
-# remove a listener
-emitter.off("birthday", congratulate)
+emitter.emit("birthday", "Frank", 37)
+emitter.emit("birthday", "Claire", 51)
 ```
 
 ## Methods overview

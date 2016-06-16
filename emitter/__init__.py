@@ -1,4 +1,5 @@
 import collections
+import copy
 
 
 __version__ = "3.1.0"
@@ -56,15 +57,15 @@ class Emitter:
 
     def get(self, event=None, listener=None):
         if event is None:
-            return self._events
+            return copy.deepcopy(self._events)
 
         if self._events.get(event) is None:
             return collections.OrderedDict()
 
         if listener is None:
-            return self._events[event]
+            return copy.deepcopy(self._events[event])
 
-        return self._events[event].get(listener, None)
+        return copy.deepcopy(self._events[event].get(listener, None))
 
     def off(self, event=None, listener=None):
         """ Remove all or one event, or only one precise listener. """

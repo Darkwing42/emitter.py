@@ -25,7 +25,7 @@ class Emitter:
             self._events[event] = collections.OrderedDict()
 
         # plug the listener to the event object and set its credit
-        self._events[event][listener] = credit
+        self._events[event].update({listener: credit})
         return
 
     def emit(self, event, *args, **kwargs):

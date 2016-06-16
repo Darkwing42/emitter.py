@@ -48,9 +48,11 @@ emitter.get()
 
 # returns an OrderedDict containing all the listeners of the specified event
 emitter.get(event1)
+# => {listener1: 3, listener2: -1}
 
 # returns the credit of this listener
 emitter.get(event1, listener1)
+# => 3
 ```
 
 ### `emitter.off()`

@@ -42,15 +42,9 @@ emitter.on("click", listener, 3)
 
 ```python
 # without params, get all the events, along with all the listeners
+# note that the value of an event is an OrderedDict, to keep listeners order
 emitter.get()
-# =>
-# { event1:
-#     { listener1: 3,
-#       listener2: -1,
-#       ...
-#     },
-#   ...
-# }
+# => {event1: {listener1: 3, listener2: -1}, event2: {listener3: 1}}
 
 # returns the listeners of the specified event
 emitter.get(event1)

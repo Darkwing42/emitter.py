@@ -24,22 +24,21 @@ emitter.emit("birthday", "Frank")
 emitter.emit("birthday", "Claire")
 
 # returns the registered events
-emitter.events()
+emitter.get()
 
 # returns listeners for an event
-emitter.listeners("birthday")
+emitter.get("birthday")
 
-# delete a listener
-emitter.remove("birthday", congratulate)
+# remove a listener
+emitter.off("birthday", congratulate)
 ```
 
 ## Methods overview
 
 * `emitter.on(event, listener[, credit])`
+* `emitter.get([event][, listener])`
+* `emitter.off([event][, listener])`
 * `emitter.emit(event[, *args][, **kwargs])`
-* `emitter.events()`
-* `emitter.listeners(event)`
-* `emitter.remove([event][, listener])`
 
 ### `emitter.on()`
 
@@ -52,6 +51,40 @@ emitter.on("click", listener)
 emitter.on("click", listener, 3)
 ```
 
+### `emitter.get()`
+
+```python
+# without params, get all the events, along with all the listeners
+emitter.get()
+# =>
+# { event1:
+#     { listener1: 3,
+#       listener2: -1,
+#       ...
+#     },
+#   ...
+# }
+
+# returns the listeners of the specified event
+emitter.get(event1)
+
+# returns the credit of this listener
+emitter.get(event1, listener1)
+```
+
+### `emitter.off()`
+
+```python
+# remove all the events
+emitter.off()
+
+# remove all the listeners of this event
+emitter.off("click")
+
+# remove only one specific listener of the event
+emitter.off("click", listener1)
+```
+
 ### `emitter.emit()`
 
 ```python
@@ -62,40 +95,6 @@ emitter.emit("click")
 # data can be passed when event is fired
 emitter.emit("click", {"x": 16, "y": 78})
 emitter.emit("click", 28, y=72)
-```
-
-### `emitter.events()`
-
-```python
-# returns a set containing all the registered events
-emitter.events()
-# => {"birthday", "click"}
-```
-
-### `emitter.listeners()`
-
-```python
-# returns an ordered dict containing listeners for the event
-# each listener comes along with its credit
-# the insertion order of the listeners is preserved
-
-emitter.listeners("click")
-# =>
-#   { listener1: -1,
-#     listener2: 12, ... }
-```
-
-### `emitter.remove()`
-
-```python
-# remove all the events
-emitter.remove()
-
-# remove all the listeners of this event
-emitter.remove("click")
-
-# remove only one specific listener of the event
-emitter.remove("click", listener1)
 ```
 
 ## Listeners credits
@@ -143,7 +142,7 @@ cat.on("fall", die)
 ```python
 cat.on("fall", die, 9)
 
-cat.listeners("fall")[die] == 9
+cat.get("fall", die) == 9
 ```
 
 
@@ -196,7 +195,7 @@ emitter.on("error", print)
 emitter.emit("click") # display error
 
 # our listener thrown an exception, but one credit is counted anyway
-emitter.listeners("click")[listener] == 9
+emitter.get("click", listener) == 9
 ```
 
 ## Tests

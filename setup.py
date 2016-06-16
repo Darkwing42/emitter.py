@@ -9,5 +9,5 @@ setup(
   url = 'https://github.com/titouandk/emitter.py',
   download_url = 'https://github.com/titouandk/emitter.py/tarball/4.0.0',
   keywords = ['event emitter', 'event', 'emitter', 'python 3', 'python3'],
-  classifiers = [],
+  classifiers = ['Programming Language :: Python :: 3'],
 )

@@ -46,7 +46,7 @@ emitter.on("click", listener, 3)
 emitter.get()
 # => {event1: {listener1: 3, listener2: -1}, event2: {listener3: 1}}
 
-# returns the listeners of the specified event
+# returns an OrderedDict containing all the listeners of the specified event
 emitter.get(event1)
 
 # returns the credit of this listener

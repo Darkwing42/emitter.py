@@ -10,7 +10,9 @@ class Emitter:
         self._events = {}
 
     def on(self, event, listener, credit=-1):
-        """ Attach the listener to the event. """
+        """
+        Attach the listener to the event.
+        """
 
         # sanitize arguments types and values
         credit = int(credit)
@@ -29,7 +31,9 @@ class Emitter:
         return
 
     def emit(self, event, *args, **kwargs):
-        """ Trigger the listeners attached to the event. """
+        """
+        Trigger all the listeners attached to the event.
+        """
 
         # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:
@@ -56,6 +60,10 @@ class Emitter:
         return
 
     def get(self, event=None, listener=None):
+        """
+        Get the registered events or listeners.
+        """
+
         if event is None:
             return copy.deepcopy(self._events)
 
@@ -68,7 +76,9 @@ class Emitter:
         return copy.deepcopy(self._events[event].get(listener, None))
 
     def off(self, event=None, listener=None):
-        """ Remove all or one event, or only one precise listener. """
+        """
+        Remove events or listeners.
+        """
 
         # remove all events
         if event is None:

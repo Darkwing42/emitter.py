@@ -163,21 +163,78 @@ def test_on_15():
 # emitter.emit()
 
 
-def test_emit_10():
-    """ Event data is passed to the listeners. """
+def test_em_1():
+    """
+    This method triggers all the listeners of the event arg.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.on("event", lambda: l.append(1))
+    emitter.on("event", lambda: l.append(1))
+    emitter.on("event", lambda: l.append(1))
+    emitter.emit("event")
+    assert len(l) == 3
+
+
+def test_em_2():
+    """
+    This method triggers listener, in order of insertion.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.on("event", lambda: l.append(1))
+    emitter.on("event", lambda: l.append(2))
+    emitter.on("event", lambda: l.append(3))
+    emitter.emit("event")
+    assert l == [1, 2, 3]
+
+
+def test_em_3():
+    """
+    This method only triggers the listeners of the event arg.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.on("event1", lambda: l.append(1))
+    emitter.on("event2", lambda: l.append(2))
+    emitter.emit("event1")
+    assert l == [1]
+
+
+def test_em_4():
+    """
+    This method returns False if trying to emit a non-existent event.
+    """
+    emitter = Emitter()
+    result = emitter.emit("event")
+    assert result is False
+
+
+def test_em_5():
+    """
+    This method returns True when an event is emitted.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    result = emitter.emit("event")
+    assert result is True
+
+
+def test_em_6():
+    """
+    *args and **kwargs args given to emit() are passed to the listeners.
+    """
     emitter = Emitter()
     params = []
 
-    def func(param1, param2, unused=None, param3=None):
+    def listener(param1, param2, unused=None, param3=None):
         params.append(param1)
         params.append(param2)
         params.append(unused)
         params.append(param3)
 
-    emitter.on("event", func)
-
+    emitter.on("event", listener)
     emitter.emit("event", 10, 20, param3="hello")
-
     assert params == [10, 20, None, "hello"]
 
 

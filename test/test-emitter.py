@@ -3,131 +3,137 @@ from collections import OrderedDict
 from emitter import Emitter
 
 
-# Testing each method of Emitter
+# Emitter()
 
 
-# Testing the on() method
+# emitter.on()
 
 
-def test_on_10():
-    """ Register a listener without credit. """
+def test_on_1():
+    """
+    This method can take 2 args - an event and a listener.
+    """
     emitter = Emitter()
-    emitter.on("test", callable)
+    emitter.on("event", callable)
+    assert callable in emitter.get("event")
 
-    assert callable in emitter.get("test")
 
-
-def test_on_20():
-    """ Listener must be callable. """
+def test_on_2():
+    """
+    This method can take 3 args - an event, a listener and a credit.
+    """
     emitter = Emitter()
+    emitter.on("event", callable, 3)
+    assert emitter.get("event", callable) == 3
 
+
+def test_on_3():
+    """
+    The listener arg must be a callable.
+    """
+    emitter = Emitter()
     with pytest.raises(TypeError):
-        emitter.on("test", False)
+        emitter.on("event", False)
 
 
-def test_on_30():
-    """ Register a listener along with its credit. """
+def test_on_4():
+    """
+    The default value of the credit arg is -1.
+    """
     emitter = Emitter()
-    emitter.on("test", callable, 3)
+    emitter.on("event", callable)
+    assert emitter.get("event", callable) == -1
 
-    assert emitter.get("test", callable) == 3
 
-
-def test_on_40():
-    """ The default credit value is -1. """
+def test_on_5():
+    """
+    The credit argument can be negative, meaning infinity.
+    """
     emitter = Emitter()
-    emitter.on("test", callable)
+    emitter.on("event", callable, -10)
+    assert emitter.get("event", callable) == -10
 
-    assert emitter.get("test", callable) == -1
 
-
-def test_on_50():
-    """ Negative credits are accepted, meaning infinity. """
+def test_on_6():
+    """
+    Each listener have its own credit.
+    """
     emitter = Emitter()
-    emitter.on("test", callable, -10)
+    emitter.on("event", callable, 10)
+    emitter.on("event", str, 20)
+    emitter.on("event", int, -10)
+    assert emitter.get("event", callable) == 10
+    assert emitter.get("event", str) == 20
+    assert emitter.get("event", int) == -10
 
-    assert emitter.get("test", callable) == -10
 
-
-def test_on_60():
-    """ Each listener must have its own credit. """
+def test_on_7():
+    """
+    Multiple events can be registered in an emitter.
+    """
     emitter = Emitter()
-    emitter.on("test", callable, 10)
-    emitter.on("test", str, 20)
-    emitter.on("test", int, -10)
-
-    assert emitter.get("test", callable) == 10
-    assert emitter.get("test", str) == 20
-    assert emitter.get("test", int) == -10
+    emitter.on("event1", callable)
+    emitter.on("event2", str)
+    assert callable in emitter.get("event1")
+    assert str in emitter.get("event2")
 
 
-def test_on_70():
-    """ Multiple events can be registered. """
+def test_on_8():
+    """
+    Each event have its own listeners.
+    """
     emitter = Emitter()
-    emitter.on("test1", callable)
-    emitter.on("test2", str)
-
-    assert callable in emitter.get("test1")
-    assert str in emitter.get("test2")
-
-
-def test_on_80():
-    """ Each event have its own listeners. """
-    emitter = Emitter()
-    emitter.on("test1", callable)
-    emitter.on("test2", str)
-
-    assert str not in emitter.get("test1")
-    assert callable not in emitter.get("test2")
+    emitter.on("event1", callable)
+    emitter.on("event2", str)
+    assert str not in emitter.get("event1")
+    assert callable not in emitter.get("event2")
 
 
-def test_on_90():
-    """ Max of calls for a listener can be set using the "credit" argument. """
+def test_on_9():
+    """
+    Max of calls for a listener can be set using the credit arg.
+    """
     emitter = Emitter()
     l = []
-
-    emitter.on("test", lambda: l.append(1), 2)
-
-    emitter.emit("test")
-    emitter.emit("test")
-    emitter.emit("test")
-
+    emitter.on("event", lambda: l.append(1), 2)
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")  # nothing happens
     assert len(l) == 2
 
 
-def test_on_100():
-    """ When no "credit" specified, listener can be called infinitely. """
+def test_on_10():
+    """
+    When credit arg is not specified, listener can be called infinitely.
+    """
     emitter = Emitter()
     l = []
-
-    emitter.on("test", lambda: l.append(1))
-
-    emitter.emit("test")
-    emitter.emit("test")
-    emitter.emit("test")
-
+    emitter.on("event", lambda: l.append(1))
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
     assert len(l) == 3
 
 
-def test_on_110():
-    """ Creating an event using False value. """
+def test_on_11():
+    """
+    False value can be used as an event.
+    """
     emitter = Emitter()
-
     emitter.on(False, str)
-
     assert False in emitter.get()
 
 
-def test_on_120():
-    """ Listener with credit equals to 0 is not inserted. """
+def test_on_12():
+    """
+    Listener with credit equals to 0 is not inserted.
+    """
     emitter = Emitter()
-
-    emitter.on("evt", str, 0)
-
-    assert str not in emitter.get("evt")
+    emitter.on("event", str, 0)
+    assert str not in emitter.get("event")
 
 
-# Testing the emit() method
+# emitter.emit()
 
 
 def test_emit_10():
@@ -141,9 +147,9 @@ def test_emit_10():
         params.append(unused)
         params.append(param3)
 
-    emitter.on("test", func)
+    emitter.on("event", func)
 
-    emitter.emit("test", 10, 20, param3="hello")
+    emitter.emit("event", 10, 20, param3="hello")
 
     assert params == [10, 20, None, "hello"]
 
@@ -275,15 +281,15 @@ def test_events_20():
     """ events() returns a set containing all events. """
     emitter = Emitter()
 
-    emitter.on("test1", callable)
-    emitter.on("test2", callable)
-    emitter.on("test3", callable)
+    emitter.on("event1", callable)
+    emitter.on("event2", callable)
+    emitter.on("event3", callable)
 
     events = emitter.get()
 
-    assert "test1" in events
-    assert "test2" in events
-    assert "test3" in events
+    assert "event1" in events
+    assert "event2" in events
+    assert "event3" in events
 
 
 def test_events_30():
@@ -317,10 +323,10 @@ def test_listeners_20():
     """
     emitter = Emitter()
 
-    emitter.on("test", callable, 10)
-    emitter.on("test", list, 42)
+    emitter.on("event", callable, 10)
+    emitter.on("event", list, 42)
 
-    listeners = emitter.get("test")
+    listeners = emitter.get("event")
 
     assert isinstance(listeners, OrderedDict)
 
@@ -397,15 +403,15 @@ def test_remove_20():
     """ Removing only a specified event. """
     emitter = Emitter()
 
-    emitter.on("test", callable)
-    emitter.on("test", str)
+    emitter.on("event", callable)
+    emitter.on("event", str)
 
     emitter.on("raccoon", callable)
     emitter.on("raccoon", str)
 
-    emitter.off("test")
+    emitter.off("event")
 
-    assert emitter.get("test") == {}
+    assert emitter.get("event") == {}
     assert callable in emitter.get("raccoon")
     assert str in emitter.get("raccoon")
 
@@ -414,12 +420,12 @@ def test_remove_30():
     """ Removing a listener. """
     emitter = Emitter()
 
-    emitter.on("test", callable)
-    emitter.on("test", str)
+    emitter.on("event", callable)
+    emitter.on("event", str)
 
-    emitter.off("test", callable)
+    emitter.off("event", callable)
 
-    listeners = emitter.get("test")
+    listeners = emitter.get("event")
 
     assert callable not in listeners
     assert str in listeners

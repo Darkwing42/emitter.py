@@ -133,6 +133,33 @@ def test_on_12():
     assert str not in emitter.get("event")
 
 
+def test_on_13():
+    """
+    This method does not insert listener if credit arg is equal to 0.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable, 0)
+    assert callable not in emitter.get("event")
+
+
+def test_on_14():
+    """
+    This method returns False if listener is not registered.
+    """
+    emitter = Emitter()
+    result = emitter.on("event", callable, 0)  # 0 credit, no registration
+    assert result is False
+
+
+def test_on_15():
+    """
+    This method returns True if listener has been registered.
+    """
+    emitter = Emitter()
+    result = emitter.on("event", callable)
+    assert result is True
+
+
 # emitter.emit()
 
 

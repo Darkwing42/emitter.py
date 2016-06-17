@@ -17,7 +17,7 @@ class Emitter:
         # sanitize arguments types and values
         credit = int(credit)
         if credit == 0:
-            return
+            return False
 
         if not callable(listener):
             raise TypeError("{}: listener is not callable".format(listener))
@@ -28,7 +28,7 @@ class Emitter:
 
         # plug the listener to the event object and set its credit
         self._events[event].update({listener: credit})
-        return
+        return True
 
     def emit(self, event, *args, **kwargs):
         """
@@ -37,7 +37,7 @@ class Emitter:
 
         # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:
-            return
+            return False
 
         # trigger each listener attached to the event
         for listener in self._events[event]:
@@ -57,7 +57,7 @@ class Emitter:
             if self._events[event][listener] == 0:
                 self.off(event, listener)
 
-        return
+        return True
 
     def get(self, event=None, listener=None):
         """
@@ -83,20 +83,20 @@ class Emitter:
         # remove all events
         if event is None:
             self._events = {}
-            return
+            return True
 
         # if user tries to remove an non-existent event
         if self._events.get(event) is None:
-            return
+            return False
 
         # if listener argument isn't specified, delete the whole event
         if listener is None:
             del self._events[event]
-            return
+            return True
 
         # if user tries to remove a non-existent listener
         if self._events[event].get(listener) is None:
-            return
+            return False
 
         # delete only the specified listener
         del self._events[event][listener]
@@ -105,4 +105,4 @@ class Emitter:
         if len(self._events[event]) == 0:
             del self._events[event]
 
-        return
+        return True

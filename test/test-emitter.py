@@ -515,3 +515,47 @@ def test_of_5():
 
     emitter.off(False, callable)
     assert callable not in emitter.get(False)
+
+
+def test_of_6():
+    """
+    Returns True if all events are deleted.
+    """
+    emitter = Emitter()
+    assert emitter.off() is True
+
+
+def test_of_7():
+    """
+    Returns False if trying to remove a non-existent event.
+    """
+    emitter = Emitter()
+    assert emitter.off("unknown") is False
+
+
+def test_of_8():
+    """
+    Returns True if the event has been deleted.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    assert emitter.off("event") is True
+
+
+def test_of_9():
+    """
+    Returns False if trying to detach a non-existent listener.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    assert emitter.off("event", bool) is False
+
+
+def test_of_10():
+    """
+    Returns True if the specified listener has been detached.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    assert emitter.off("event", callable) is True
+

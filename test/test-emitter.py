@@ -334,51 +334,49 @@ def test_em_13():
     assert len(l) == 0
 
 
-# emitter.events()
+# emitter.get()
 
 
-def test_events_10():
-    """ When no events registered, events() returns an empty obj. """
+def test_ge_1():
+    """
+    Without args, when no events registered, the method returns an empty obj.
+    """
     emitter = Emitter()
-
     assert emitter.get() == {}
 
 
-def test_events_20():
-    """ events() returns a set containing all events. """
+def test_ge_2():
+    """
+    Without args, the method returns a dict containing the events.
+    """
     emitter = Emitter()
-
     emitter.on("event1", callable)
     emitter.on("event2", callable)
     emitter.on("event3", callable)
-
     events = emitter.get()
-
     assert "event1" in events
     assert "event2" in events
     assert "event3" in events
 
 
-def test_events_30():
-    """ Using the False event. """
+def test_ge_3():
+    """
+    Retrieving the False event.
+    """
     emitter = Emitter()
-
     emitter.on(False, callable)
-
     assert False in emitter.get()
 
 
-# Testing the listeners() method
-
-
-def test_listeners_10():
-    """ When passing an event that doesn't exists, returns an empty dict. """
+def test_ge_4():
+    """
+    When passing an event that doesn't exists, returns an empty dict.
+    """
     emitter = Emitter()
-
     assert emitter.get("unknown") == {}
 
 
-def test_listeners_20():
+def test_ge_5():
     """
     When passing an event, returning all callbacks attached to this event.
     The response is an OrderedDict formatted like so:
@@ -389,35 +387,35 @@ def test_listeners_20():
     }
     """
     emitter = Emitter()
-
     emitter.on("event", callable, 10)
     emitter.on("event", list, 42)
 
     listeners = emitter.get("event")
 
     assert isinstance(listeners, OrderedDict)
-
     assert listeners[callable] == 10
     assert listeners[list] == 42
 
 
-def test_listeners_30():
-    """ Check that the insertion order of the listeners is conserved. """
+def test_ge_6():
+    """
+    Check that the insertion order of the listeners is conserved.
+    """
     emitter = Emitter()
-
     emitter.on("raccoon", bool)
     emitter.on("raccoon", callable)
     emitter.on("raccoon", dict)
 
-    assert type(emitter.get("raccoon")) is OrderedDict
+    listeners = emitter.get("raccoon")
 
-    listeners = list(emitter.get("raccoon"))
+    assert type(listeners) is OrderedDict
+    assert list(listeners) == [bool, callable, dict]
 
-    assert listeners == [bool, callable, dict]
 
-
-def test_listeners_40():
-    """ Listeners insertion order should be conserved even after update. """
+def test_ge_7():
+    """
+    Listeners insertion order should be conserved even after update.
+    """
     emitter = Emitter()
 
     emitter.on("raccoon", bool)
@@ -430,24 +428,25 @@ def test_listeners_40():
     # update bool, setting credit from infinity to 10
     emitter.on("raccoon", bool, 10)
 
-    listeners = list(emitter.get("raccoon"))
+    listeners = emitter.get("raccoon")
 
-    assert listeners == [bool, callable, dict]
+    assert list(listeners) == [bool, callable, dict]
 
 
-def test_listeners_50():
-    """ Check that even if no listeners, an OrderedDict is returned. """
+def test_ge_8():
+    """
+    Even if no listeners for an event, an OrderedDict is returned.
+    """
     emitter = Emitter()
-
     assert type(emitter.get("unknown")) is OrderedDict
 
 
-def test_listeners_60():
-    """ Get the listeners for the False event. """
+def test_ge_9():
+    """
+    Get the listeners for the False event.
+    """
     emitter = Emitter()
-
     emitter.on(False, callable)
-
     assert callable in emitter.get(False)
 
 

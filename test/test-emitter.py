@@ -450,6 +450,51 @@ def test_ge_9():
     assert callable in emitter.get(False)
 
 
+def test_ge_10():
+    """
+    Get without args returns the whole emitter status.
+    """
+    emitter = Emitter()
+    emitter.on("event1", callable)
+    emitter.on("event2", bool, 3)
+    result = emitter.get()
+
+    assert result["event1"][callable] == -1
+    assert result["event2"][bool] == 3
+
+
+def test_ge_11():
+    """
+    Get all events does not returns shared object.
+    """
+    emitter = Emitter()
+    emitter.on("event1", callable)
+    result1 = emitter.get()
+    result2 = emitter.get()
+    assert result1 is not result2
+
+
+def test_ge_12():
+    """
+    Get listeners of an existing event does not returns shared object.
+    """
+    emitter = Emitter()
+    emitter.on("event1", callable)
+    result1 = emitter.get("event1")
+    result2 = emitter.get("event1")
+    assert result1 is not result2
+
+
+def test_ge_13():
+    """
+    Getting the listeners of an unknown event does not return shared obj.
+    """
+    emitter = Emitter()
+    result1 = emitter.get("unknown")
+    result2 = emitter.get("unknown")
+    assert result1 is not result2
+
+
 # emitter.off()
 
 

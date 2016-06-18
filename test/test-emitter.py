@@ -450,31 +450,29 @@ def test_ge_9():
     assert callable in emitter.get(False)
 
 
-# Testing the remove() method
+# emitter.off()
 
 
-def test_remove_10():
-    """ Remove all the events. """
+def test_of_1():
+    """
+    Called without arg, it removes all the events.
+    """
     emitter = Emitter()
-
     emitter.on("raccoon", callable)
     emitter.on("fox", callable)
-
     emitter.off()
-
     assert emitter.get() == {}
 
 
-def test_remove_20():
-    """ Removing only a specified event. """
+def test_of_2():
+    """
+    When called with 1 arg, it removes only the specified event.
+    """
     emitter = Emitter()
-
     emitter.on("event", callable)
     emitter.on("event", str)
-
     emitter.on("raccoon", callable)
     emitter.on("raccoon", str)
-
     emitter.off("event")
 
     assert emitter.get("event") == {}
@@ -482,42 +480,38 @@ def test_remove_20():
     assert str in emitter.get("raccoon")
 
 
-def test_remove_30():
-    """ Removing a listener. """
+def test_of_3():
+    """
+    Removing a listener.
+    """
     emitter = Emitter()
-
     emitter.on("event", callable)
     emitter.on("event", str)
-
     emitter.off("event", callable)
-
     listeners = emitter.get("event")
-
     assert callable not in listeners
     assert str in listeners
 
 
-def test_remove_40():
-    """ Remove the False event. """
+def test_of_4():
+    """
+    Removing the False event.
+    """
     emitter = Emitter()
-
     emitter.on(False, callable)
-
     assert False in emitter.get()
 
     emitter.off(False)
-
     assert False not in emitter.get()
 
 
-def test_remove_50():
-    """ Remove a listener of the False event. """
+def test_of_5():
+    """
+    Remove a listener of the False event.
+    """
     emitter = Emitter()
-
     emitter.on(False, callable)
-
     assert callable in emitter.get(False)
 
     emitter.off(False, callable)
-
     assert callable not in emitter.get(False)

@@ -165,7 +165,7 @@ def test_on_15():
 
 def test_em_1():
     """
-    This method triggers all the listeners of the event arg.
+    This method triggers all the listeners for the event.
     """
     emitter = Emitter()
     l = []
@@ -178,7 +178,7 @@ def test_em_1():
 
 def test_em_2():
     """
-    This method triggers listener, in order of insertion.
+    This method triggers listener in order of insertion.
     """
     emitter = Emitter()
     l = []
@@ -191,7 +191,7 @@ def test_em_2():
 
 def test_em_3():
     """
-    This method only triggers the listeners of the event arg.
+    This method only triggers the listeners of the specified event.
     """
     emitter = Emitter()
     l = []
@@ -212,7 +212,7 @@ def test_em_4():
 
 def test_em_5():
     """
-    This method returns True when an event is emitted.
+    This method returns True when the event is emitted.
     """
     emitter = Emitter()
     emitter.on("event", callable)
@@ -238,64 +238,50 @@ def test_em_6():
     assert params == [10, 20, None, "hello"]
 
 
-def test_emit_20():
-    """ Check that the listeners are fired in the right order. """
+def test_em_7():
+    """
+    The emitter can emit the False event.
+    """
     emitter = Emitter()
-
-    l = []
-
-    emitter.on("raccoon", lambda: l.append(1))
-    emitter.on("raccoon", lambda: l.append(2))
-    emitter.on("raccoon", lambda: l.append(3))
-
-    emitter.emit("raccoon")
-
-    assert l == [1, 2, 3]
-
-
-def test_emit_30():
-    """ Emit the False event. """
-    emitter = Emitter()
-
     l = []
     emitter.on(False, lambda: l.append(1))
     emitter.emit(False)
-
     assert 1 in l
 
 
-def test_emit_40():
-    """ Negative credit listeners can be triggered infinitely. """
+def test_em_8():
+    """
+    Negative credit listeners can be triggered infinitely.
+    """
     emitter = Emitter()
-
     l = []
-
     emitter.on("event", lambda: l.append(1), -22)
     emitter.emit("event")
     emitter.emit("event")
     emitter.emit("event")
-
     assert len(l) == 3
 
 
-def test_emit_50():
-    """ 'error' event is emitted when listener throws exception. """
+def test_em_9():
+    """
+    'error' event is emitted when listener throws exception.
+    """
     emitter = Emitter()
 
     def listener(*args, **kwargs):
         raise Exception()
 
     l = []
-
     emitter.on("thing", listener)
     emitter.on("error", lambda err: l.append(err))
     emitter.emit("thing")
-
     assert len(l) == 1
 
 
-def test_emit_60():
-    """ Credit is updated even if listener throws exception. """
+def test_em_10():
+    """
+    Credit is updated even if listener throws exception.
+    """
     emitter = Emitter()
 
     def listener(*args, **kwargs):
@@ -303,12 +289,13 @@ def test_emit_60():
 
     emitter.on("event", listener, 5)
     emitter.emit("event")
-
     assert emitter.get("event", listener) == 4
 
 
-def test_emit_70():
-    """ If error listeners throw exceptions, avoid infinite recursion. """
+def test_em_11():
+    """
+    If error listeners throw exceptions, avoid infinite recursion.
+    """
     emitter = Emitter()
 
     def listener(*args, **kwargs):
@@ -321,37 +308,33 @@ def test_emit_70():
         emitter.emit("event")
 
 
-def test_emit_80():
-    """ When a listener have no more credits, delete it. """
+def test_em_12():
+    """
+    When a listener have no more credits, delete it.
+    """
     emitter = Emitter()
-
-    emitter.on("evt", callable, 3)
-
-    assert callable in emitter.get("evt")
-
-    emitter.emit("evt")
-    emitter.emit("evt")
-    emitter.emit("evt")
-
-    assert callable not in emitter.get("evt")
+    emitter.on("event", callable, 3)
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
+    assert callable not in emitter.get("event")
 
 
-def test_emit_90():
-    """ No errors should be triggered when a listener have no more credit. """
+def test_em_13():
+    """
+    No errors should be triggered when a listener have no more credit.
+    """
     emitter = Emitter()
-
     l = []
-
-    emitter.on("evt", str, 2)
+    emitter.on("event", str, 2)
     emitter.on("error", lambda: l.append(1))
-    emitter.emit("evt")
-    emitter.emit("evt")
-    emitter.emit("evt")
-
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
     assert len(l) == 0
 
 
-# Testing the events() method
+# emitter.events()
 
 
 def test_events_10():

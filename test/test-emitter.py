@@ -163,7 +163,7 @@ def test_on_15():
 # emitter.emit()
 
 
-def test_em_1():
+def test_emit_1():
     """
     This method triggers all the listeners for the event.
     """
@@ -176,7 +176,7 @@ def test_em_1():
     assert len(l) == 3
 
 
-def test_em_2():
+def test_emit_2():
     """
     This method triggers listener in order of insertion.
     """
@@ -189,7 +189,7 @@ def test_em_2():
     assert l == [1, 2, 3]
 
 
-def test_em_3():
+def test_emit_3():
     """
     This method only triggers the listeners of the specified event.
     """
@@ -201,7 +201,7 @@ def test_em_3():
     assert l == [1]
 
 
-def test_em_4():
+def test_emit_4():
     """
     This method returns False if trying to emit a non-existent event.
     """
@@ -210,7 +210,7 @@ def test_em_4():
     assert result is False
 
 
-def test_em_5():
+def test_emit_5():
     """
     This method returns True when the event is emitted.
     """
@@ -220,7 +220,7 @@ def test_em_5():
     assert result is True
 
 
-def test_em_6():
+def test_emit_6():
     """
     *args and **kwargs args given to emit() are passed to the listeners.
     """
@@ -238,7 +238,7 @@ def test_em_6():
     assert params == [10, 20, None, "hello"]
 
 
-def test_em_7():
+def test_emit_7():
     """
     The emitter can emit the False event.
     """
@@ -249,7 +249,7 @@ def test_em_7():
     assert 1 in l
 
 
-def test_em_8():
+def test_emit_8():
     """
     Negative credit listeners can be triggered infinitely.
     """
@@ -262,7 +262,7 @@ def test_em_8():
     assert len(l) == 3
 
 
-def test_em_9():
+def test_emit_9():
     """
     'error' event is emitted when listener throws exception.
     """
@@ -278,7 +278,7 @@ def test_em_9():
     assert len(l) == 1
 
 
-def test_em_10():
+def test_emit_10():
     """
     Credit is updated even if listener throws exception.
     """
@@ -292,7 +292,7 @@ def test_em_10():
     assert emitter.get("event", listener) == 4
 
 
-def test_em_11():
+def test_emit_11():
     """
     If error listeners throw exceptions, avoid infinite recursion.
     """
@@ -308,7 +308,7 @@ def test_em_11():
         emitter.emit("event")
 
 
-def test_em_12():
+def test_emit_12():
     """
     When a listener have no more credits, delete it.
     """
@@ -320,7 +320,7 @@ def test_em_12():
     assert callable not in emitter.get("event")
 
 
-def test_em_13():
+def test_emit_13():
     """
     No errors should be triggered when a listener have no more credit.
     """
@@ -337,29 +337,27 @@ def test_em_13():
 # emitter.get()
 
 
-def test_ge_1():
+def test_get_1():
     """
-    Without args, when no events registered, the method returns an empty obj.
+    Without args, when no events registered, the method returns an empty set.
     """
     emitter = Emitter()
-    assert emitter.get() == {}
+    assert emitter.get() == set()
 
 
-def test_ge_2():
+def test_get_2():
     """
-    Without args, the method returns a dict containing the events.
+    Without args, the method returns a set containing the events.
     """
     emitter = Emitter()
     emitter.on("event1", callable)
     emitter.on("event2", callable)
     emitter.on("event3", callable)
     events = emitter.get()
-    assert "event1" in events
-    assert "event2" in events
-    assert "event3" in events
+    assert events == {"event1", "event2", "event3"}
 
 
-def test_ge_3():
+def test_get_3():
     """
     Retrieving the False event.
     """
@@ -368,23 +366,17 @@ def test_ge_3():
     assert False in emitter.get()
 
 
-def test_ge_4():
+def test_get_4():
     """
-    When passing an event that doesn't exists, returns an empty dict.
+    When passing an event that doesn't exists, returns an empty list.
     """
     emitter = Emitter()
-    assert emitter.get("unknown") == {}
+    assert emitter.get("unknown") == []
 
 
-def test_ge_5():
+def test_get_5():
     """
-    When passing an event, returning all callbacks attached to this event.
-    The response is an OrderedDict formatted like so:
-    {
-        callable_1: credit_1,
-        callable_2: credit_2,
-        ...
-    }
+    When passing an event, returns a list containing all its listeners.
     """
     emitter = Emitter()
     emitter.on("event", callable, 10)
@@ -392,12 +384,11 @@ def test_ge_5():
 
     listeners = emitter.get("event")
 
-    assert isinstance(listeners, OrderedDict)
-    assert listeners[callable] == 10
-    assert listeners[list] == 42
+    assert isinstance(listeners, list)
+    assert listeners == [callable, list]
 
 
-def test_ge_6():
+def test_get_6():
     """
     Check that the insertion order of the listeners is conserved.
     """
@@ -408,11 +399,11 @@ def test_ge_6():
 
     listeners = emitter.get("raccoon")
 
-    assert type(listeners) is OrderedDict
-    assert list(listeners) == [bool, callable, dict]
+    assert isinstance(listeners, list)
+    assert listeners == [bool, callable, dict]
 
 
-def test_ge_7():
+def test_get_7():
     """
     Listeners insertion order should be conserved even after update.
     """
@@ -433,15 +424,16 @@ def test_ge_7():
     assert list(listeners) == [bool, callable, dict]
 
 
-def test_ge_8():
+def test_get_8():
     """
     Even if no listeners for an event, an OrderedDict is returned.
     """
     emitter = Emitter()
-    assert type(emitter.get("unknown")) is OrderedDict
+    result = emitter.get("unknown")
+    assert isinstance(result, list)
 
 
-def test_ge_9():
+def test_get_9():
     """
     Get the listeners for the False event.
     """
@@ -450,20 +442,19 @@ def test_ge_9():
     assert callable in emitter.get(False)
 
 
-def test_ge_10():
+def test_get_10():
     """
-    Get without args returns the whole emitter status.
+    Get without args returns all the events.
     """
     emitter = Emitter()
     emitter.on("event1", callable)
     emitter.on("event2", bool, 3)
     result = emitter.get()
 
-    assert result["event1"][callable] == -1
-    assert result["event2"][bool] == 3
+    assert result == {"event1", "event2"}
 
 
-def test_ge_11():
+def test_get_11():
     """
     Get all events does not returns shared object.
     """
@@ -474,7 +465,7 @@ def test_ge_11():
     assert result1 is not result2
 
 
-def test_ge_12():
+def test_get_12():
     """
     Get listeners of an existing event does not returns shared object.
     """
@@ -485,7 +476,7 @@ def test_ge_12():
     assert result1 is not result2
 
 
-def test_ge_13():
+def test_get_13():
     """
     Getting the listeners of an unknown event does not return shared obj.
     """
@@ -498,7 +489,7 @@ def test_ge_13():
 # emitter.off()
 
 
-def test_of_1():
+def test_off_1():
     """
     Called without arg, it removes all the events.
     """
@@ -506,10 +497,10 @@ def test_of_1():
     emitter.on("raccoon", callable)
     emitter.on("fox", callable)
     emitter.off()
-    assert emitter.get() == {}
+    assert emitter.get() == set()
 
 
-def test_of_2():
+def test_off_2():
     """
     When called with 1 arg, it removes only the specified event.
     """
@@ -520,12 +511,12 @@ def test_of_2():
     emitter.on("raccoon", str)
     emitter.off("event")
 
-    assert emitter.get("event") == {}
+    assert emitter.get("event") == []
     assert callable in emitter.get("raccoon")
     assert str in emitter.get("raccoon")
 
 
-def test_of_3():
+def test_off_3():
     """
     Removing a listener.
     """
@@ -538,7 +529,7 @@ def test_of_3():
     assert str in listeners
 
 
-def test_of_4():
+def test_off_4():
     """
     Removing the False event.
     """
@@ -550,7 +541,7 @@ def test_of_4():
     assert False not in emitter.get()
 
 
-def test_of_5():
+def test_off_5():
     """
     Remove a listener of the False event.
     """
@@ -562,7 +553,7 @@ def test_of_5():
     assert callable not in emitter.get(False)
 
 
-def test_of_6():
+def test_off_6():
     """
     Returns True if all events are deleted.
     """
@@ -570,7 +561,7 @@ def test_of_6():
     assert emitter.off() is True
 
 
-def test_of_7():
+def test_off_7():
     """
     Returns False if trying to remove a non-existent event.
     """
@@ -578,7 +569,7 @@ def test_of_7():
     assert emitter.off("unknown") is False
 
 
-def test_of_8():
+def test_off_8():
     """
     Returns True if the event has been deleted.
     """
@@ -587,7 +578,7 @@ def test_of_8():
     assert emitter.off("event") is True
 
 
-def test_of_9():
+def test_off_9():
     """
     Returns False if trying to detach a non-existent listener.
     """
@@ -596,7 +587,7 @@ def test_of_9():
     assert emitter.off("event", bool) is False
 
 
-def test_of_10():
+def test_off_10():
     """
     Returns True if the specified listener has been detached.
     """

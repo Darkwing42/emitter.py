@@ -41,14 +41,13 @@ emitter.on("click", listener, 3)
 ### `emitter.get()`
 
 ```python
-# without params, get all the events, along with all the listeners
-# note that the value of an event is an OrderedDict, to keep listeners order
+# without params, returns a set containing all the events
 emitter.get()
-# => {event1: {listener1: 3, listener2: -1}, event2: {listener3: 1}}
+# => {event1, event2}
 
-# returns an OrderedDict containing all the listeners of the specified event
+# returns an list containing all the listeners of the specified event
 emitter.get(event1)
-# => {listener1: 3, listener2: -1}
+# => [listener1, listener2]
 
 # returns the credit of this listener
 emitter.get(event1, listener1)

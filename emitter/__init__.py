@@ -1,8 +1,7 @@
 import collections
-import copy
 
 
-__version__ = "4.0.0"
+__version__ = "5.0.0"
 
 
 class Emitter:
@@ -65,15 +64,15 @@ class Emitter:
         """
 
         if event is None:
-            return copy.deepcopy(self._events)
+            return set(self._events)
 
         if self._events.get(event) is None:
-            return collections.OrderedDict()
+            return []
 
         if listener is None:
-            return copy.deepcopy(self._events[event])
+            return list(self._events[event])
 
-        return copy.deepcopy(self._events[event].get(listener, None))
+        return self._events[event].get(listener, None)
 
     def off(self, event=None, listener=None):
         """

@@ -486,6 +486,15 @@ def test_get_13():
     assert result1 is not result2
 
 
+def test_get_14():
+    """
+    Getting the credit of a listener.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable, 4)
+    assert emitter.get("event", callable) == 4
+
+
 # emitter.off()
 
 

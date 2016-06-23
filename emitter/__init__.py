@@ -14,6 +14,10 @@ class Emitter:
         """
 
         # sanitize arguments types and values
+
+        if event is None:
+            raise ValueError("event cannot be None")
+
         credit = int(credit)
         if credit == 0:
             return False
@@ -33,6 +37,9 @@ class Emitter:
         """
         Trigger all the listeners attached to the event.
         """
+
+        if event is None:
+            return False
 
         # if user tries to emits an event that doesn't exists
         if self._events.get(event) is None:

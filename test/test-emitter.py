@@ -160,6 +160,15 @@ def test_on_15():
     assert result is True
 
 
+def test_on_16():
+    """
+    An event cannot be None.
+    """
+    emitter = Emitter()
+    with pytest.raises(ValueError):
+        result = emitter.on(None, callable)
+
+
 # emitter.emit()
 
 
@@ -332,6 +341,14 @@ def test_emit_13():
     emitter.emit("event")
     emitter.emit("event")
     assert len(l) == 0
+
+
+def test_emit_14():
+    """
+    Returns False if trying to emit None.
+    """
+    emitter = Emitter()
+    assert emitter.emit(None) is False
 
 
 # emitter.get()

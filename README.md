@@ -22,45 +22,44 @@ emitter.emit("birthday", "Frank", 37)
 
 ## Methods Overview
 
-* `emitter.on(event, listener[, errorHandler])`
-* `emitter.once(event, listener[, errorHandler])`
-* `emitter.onError(errorHandler)`
-* `emitter.off([event][, listener])`
+* `emitter.on(event, listener[, error_handler])`
+* `emitter.once(event, listener[, error_handler])`
+* `emitter.on_error(error_handler)`
+* `emitter.clear([event][, listener])`
 * `emitter.emit(event[, *args][, **kwargs])`
-* `emitter.events()`
-* `emitter.listeners(event)`
+* `emitter.get([event][, listener])`
 
-### `emitter.on(event, listener[, errorHandler])`
+### `emitter.on(event, listener[, error_handler])`
 
 ```python
 emitter.on("click", listener)
 ```
 
-### `emitter.once(event, listener[, errorHandler])`
+### `emitter.once(event, listener[, error_handler])`
 
 ```python
 emitter.once("click", listener)
 ```
 
-### `emitter.onError(errorHandler)`
+### `emitter.on_error(error_handler)`
 
 ```python
-emitter.onError(errorHandler)
+emitter.on_error(error_handler)
 ```
 
 See [Error Handling][error-handling].
 
-### `emitter.off([event][, listener])`
+### `emitter.clear([event][, listener])`
 
 ```python
 # remove all the events
-emitter.off()
+emitter.clear()
 
 # remove all "click" listeners
-emitter.off("click")
+emitter.clear("click")
 
 # remove a specific listener
-emitter.off("click", listener1)
+emitter.clear("click", listener1)
 ```
 
 ### `emitter.emit(event[, *args][, **kwargs])`
@@ -74,18 +73,17 @@ emitter.emit("click", {"x": 16, "y": 78})
 emitter.emit("click", 28, y=72)
 ```
 
-### `emitter.events()`
+### `emitter.get([event][, listener])`
 
 ```python
-emitter.events()
+emitter.get()
 # => {event1, event2}
-```
 
-### `emitter.listeners(event)`
-
-```python
-emitter.listeners(event1)
+emitter.get(event1)
 # => [listener1, listener2]
+
+emitter.get(event1, listener1)
+# => error_handler
 ```
 
 
@@ -94,7 +92,7 @@ emitter.listeners(event1)
 When exceptions occurs, an error handler function can be triggered.
 
 ```python
-def errorHandler(err, *args, **kwargs):
+def error_handler(err, *args, **kwargs):
     ...
 ```
 
@@ -105,7 +103,7 @@ Errors can be handled locally, or globally.
 Error is handled at the listener level.
 
 ```python
-emitter.on(event, listener, errorHandler)
+emitter.on(event, listener, error_handler)
 ```
 
 If the error handler throws himself an exception, the error is handled globally.
@@ -115,7 +113,7 @@ If the error handler throws himself an exception, the error is handled globally.
 Errors that are not locally catched are handled at the event emitter level.
 
 ```python
-emitter.onError(errorHandler)
+emitter.on_error(error_handler)
 ```
 
 If the global error handler throws himself an exception, it is propagated above.

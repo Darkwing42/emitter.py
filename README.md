@@ -1,9 +1,12 @@
 # emitter.py
 
-A minimalist event emitter for Python 3.
+A simple event emitter for Python 3.
 
 ```sh
 $ pip install emitter.py
+
+# if several versions of Python installed
+$ pip3 install emitter.py
 ```
 
 
@@ -20,20 +23,26 @@ emitter.emit("birthday", "Frank", 37)
 ```
 
 
-## Methods Overview
+## API Overview
 
 * `emitter.on(event, listener[, error_handler])`
-* `emitter.once(event, listener[, error_handler])`
-* `emitter.on_error(error_handler)`
-* `emitter.clear([event][, listener])`
+* `emitter.once(event, listener[, error_handler])` 
 * `emitter.emit(event[, *args][, **kwargs])`
+* `emitter.clear([event][, listener][, error_handler])`
 * `emitter.get([event][, listener])`
+* `emitter.events()`
+* `emitter.listeners(event)`
+* `emitter.on_error([error_handler])` 
+
 
 ### `emitter.on(event, listener[, error_handler])`
 
 ```python
-emitter.on("click", listener)
+emitter.on("click", listener1)
 ```
+
+See [Error Handling][error-handling].
+
 
 ### `emitter.once(event, listener[, error_handler])`
 
@@ -41,26 +50,8 @@ emitter.on("click", listener)
 emitter.once("click", listener)
 ```
 
-### `emitter.on_error(error_handler)`
-
-```python
-emitter.on_error(error_handler)
-```
-
 See [Error Handling][error-handling].
 
-### `emitter.clear([event][, listener])`
-
-```python
-# remove all the events
-emitter.clear()
-
-# remove all "click" listeners
-emitter.clear("click")
-
-# remove a specific listener
-emitter.clear("click", listener1)
-```
 
 ### `emitter.emit(event[, *args][, **kwargs])`
 
@@ -73,23 +64,78 @@ emitter.emit("click", {"x": 16, "y": 78})
 emitter.emit("click", 28, y=72)
 ```
 
+
+### `emitter.clear([event][, listener][, error_handler])`
+
+```python
+# remove all the events
+emitter.clear()
+
+# remove all "click" listeners
+emitter.clear("click")
+
+# remove a specific listener
+emitter.clear("click", listener1)
+
+# remove the error handler
+emitter.clear("click", listener1, error_handler)
+```
+
+
 ### `emitter.get([event][, listener])`
 
 ```python
+# get all the events
 emitter.get()
 # => {event1, event2}
 
-emitter.get(event1)
+# get all "click" listeners
+emitter.get("click")
 # => [listener1, listener2]
 
-emitter.get(event1, listener1)
+# get the error handler
+emitter.clear("click", listener1)
 # => error_handler
 ```
 
 
+### `emitter.events()`
+
+Equivalent of `emitter.get()`.
+
+```python
+emitter.events()
+# => {event1, event2}
+```
+
+
+### `emitter.listeners(event)`
+
+Equivalent of `emitter.get(event)`.
+
+```python
+emitter.listeners(event1)
+# => [listener1, listener2]
+```
+
+
+### `emitter.on_error([error_handler])`
+
+```python
+# get error handler
+emitter.on_error()
+# => error_handler
+
+# set a new error handler
+emitter.on_error(error_handler)
+```
+
+See [Error Handling][error-handling].
+
+
 ## Error Handling
 
-When exceptions occurs, an error handler function can be triggered.
+Errors raised by listeners can be intercepted through error handlers.
 
 ```python
 def error_handler(err, *args, **kwargs):
@@ -112,8 +158,11 @@ If the error handler throws himself an exception, the error is handled globally.
 
 Errors that are not locally catched are handled at the event emitter level.
 
+
 ```python
-emitter.on_error(error_handler)
+emitter.on(event, listener1)  # no error handler
+
+emitter.on_error(error_handler)  # global error handler
 ```
 
 If the global error handler throws himself an exception, it is propagated above.

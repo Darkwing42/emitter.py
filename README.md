@@ -25,12 +25,12 @@ emitter.emit("event", "data1", "data2")
 
 ## API Overview
 
-* `emitter.on(event, listener)`
-* `emitter.once(event, listener)` 
-* `emitter.emit(event[, *args][, **kwargs])`
-* `emitter.off([event][, listener])`
-* `emitter.events()`
-* `emitter.listeners(event)`
+* `emitter.on(event, listener): bool`
+* `emitter.once(event, listener): bool` 
+* `emitter.emit(event[, *args][, **kwargs]): bool`
+* `emitter.off([event][, listener]): bool`
+* `emitter.events(): set`
+* `emitter.listeners(event): list`
 
 
 ### `emitter.on(event, listener)`

@@ -112,6 +112,12 @@ def test_on__9():
     assert len(l) == 3
 
 
+# emitter.once()
+
+
+# TODO
+
+
 # emitter.emit()
 
 

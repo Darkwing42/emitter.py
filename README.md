@@ -60,7 +60,6 @@ See [Error Handling][error-handling].
 emitter.emit("click")
 
 # emit event with data
-emitter.emit("click", {"x": 16, "y": 78})
 emitter.emit("click", 28, y=72)
 ```
 
@@ -85,13 +84,16 @@ emitter.clear("click", listener1, error_handler)
 ### `emitter.get([event][, listener])`
 
 ```python
-emitter.get()  # get all the events
+# get all the events
+emitter.get()
 # => {event1, event2}
 
-emitter.get("click")  # get all "click" listeners
+# get all "click" listeners
+emitter.get("click")
 # => [listener1, listener2]
 
-emitter.clear("click", listener1)  # get the error handler
+# get the error handler
+emitter.clear("click", listener1)
 # => error_handler
 ```
 
@@ -119,10 +121,12 @@ emitter.listeners(event1)
 ### `emitter.on_error([error_handler])`
 
 ```python
-emitter.on_error()  # get error handler
+# get error handler
+emitter.on_error()
 # => error_handler
 
-emitter.on_error(error_handler)  # set a new error handler
+# set a new error handler
+emitter.on_error(error_handler)
 ```
 
 See [Error Handling][error-handling].

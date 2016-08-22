@@ -9,172 +9,116 @@ from emitter import Emitter
 # emitter.on()
 
 
-def test_on_1():
+def test_on__1():
     """
-    This method can take 2 args - an event and a listener.
+    None event raises an exception.
+    """
+    emitter = Emitter()
+
+    with pytest.raises(ValueError):
+        emitter.on(None, callable)
+
+
+def test_on__2():
+    """
+    True is a valid event.
+    """
+    emitter = Emitter()
+    emitter.on(True, callable)
+
+    assert True in emitter.events()
+
+
+def test_on__3():
+    """
+    False is a valid event.
+    """
+    emitter = Emitter()
+    emitter.on(False, callable)
+
+    assert False in emitter.events()
+
+
+def test_on__4():
+    """
+    A string is a valid event.
     """
     emitter = Emitter()
     emitter.on("event", callable)
-    assert callable in emitter.get("event")
+
+    assert "event" in emitter.events()
 
 
-def test_on_2():
+def test_on__5():
     """
-    This method can take 3 args - an event, a listener and a credit.
-    """
-    emitter = Emitter()
-    emitter.on("event", callable, 3)
-    assert emitter.get("event", callable) == 3
-
-
-def test_on_3():
-    """
-    The listener arg must be a callable.
+    A listener cannot be None.
     """
     emitter = Emitter()
+
     with pytest.raises(TypeError):
-        emitter.on("event", False)
+        emitter.on("event", None)
 
 
-def test_on_4():
+def test_on__6():
     """
-    The default value of the credit arg is -1.
-    """
-    emitter = Emitter()
-    emitter.on("event", callable)
-    assert emitter.get("event", callable) == -1
-
-
-def test_on_5():
-    """
-    The credit argument can be negative, meaning infinity.
+    A listener must be callable.
     """
     emitter = Emitter()
-    emitter.on("event", callable, -10)
-    assert emitter.get("event", callable) == -10
+
+    with pytest.raises(TypeError):
+        emitter.on("event", "")
 
 
-def test_on_6():
+def test_on__7():
     """
-    Each listener have its own credit.
-    """
-    emitter = Emitter()
-    emitter.on("event", callable, 10)
-    emitter.on("event", str, 20)
-    emitter.on("event", int, -10)
-    assert emitter.get("event", callable) == 10
-    assert emitter.get("event", str) == 20
-    assert emitter.get("event", int) == -10
-
-
-def test_on_7():
-    """
-    Multiple events can be registered in an emitter.
+    Multiple events can be registered.
     """
     emitter = Emitter()
+
     emitter.on("event1", callable)
-    emitter.on("event2", str)
-    assert callable in emitter.get("event1")
-    assert str in emitter.get("event2")
+    emitter.on("event2", callable)
+
+    assert "event1" in emitter.events()
+    assert "event2" in emitter.events()
 
 
-def test_on_8():
+def test_on__8():
     """
-    Each event have its own listeners.
-    """
-    emitter = Emitter()
-    emitter.on("event1", callable)
-    emitter.on("event2", str)
-    assert str not in emitter.get("event1")
-    assert callable not in emitter.get("event2")
-
-
-def test_on_9():
-    """
-    Max of calls for a listener can be set using the credit arg.
+    Listeners are not shared between events.
     """
     emitter = Emitter()
-    l = []
-    emitter.on("event", lambda: l.append(1), 2)
-    emitter.emit("event")
-    emitter.emit("event")
-    emitter.emit("event")  # nothing happens
-    assert len(l) == 2
+
+    emitter.on("event1", str)
+    emitter.on("event2", callable)
+
+    assert str in emitter.listeners("event1")
+    assert str not in emitter.listeners("event2")
+
+    assert callable in emitter.listeners("event2")
+    assert callable not in emitter.listeners("event1")
 
 
-def test_on_10():
+def test_on__9():
     """
-    When credit arg is not specified, listener can be called infinitely.
+    Listeners can be called infinitely.
     """
     emitter = Emitter()
     l = []
     emitter.on("event", lambda: l.append(1))
+
     emitter.emit("event")
     emitter.emit("event")
     emitter.emit("event")
+
     assert len(l) == 3
-
-
-def test_on_11():
-    """
-    False value can be used as an event.
-    """
-    emitter = Emitter()
-    emitter.on(False, str)
-    assert False in emitter.get()
-
-
-def test_on_12():
-    """
-    Listener with credit equals to 0 is not inserted.
-    """
-    emitter = Emitter()
-    emitter.on("event", str, 0)
-    assert str not in emitter.get("event")
-
-
-def test_on_13():
-    """
-    This method does not insert listener if credit arg is equal to 0.
-    """
-    emitter = Emitter()
-    emitter.on("event", callable, 0)
-    assert callable not in emitter.get("event")
-
-
-def test_on_14():
-    """
-    This method returns False if listener is not registered.
-    """
-    emitter = Emitter()
-    result = emitter.on("event", callable, 0)  # 0 credit, no registration
-    assert result is False
-
-
-def test_on_15():
-    """
-    This method returns True if listener has been registered.
-    """
-    emitter = Emitter()
-    result = emitter.on("event", callable)
-    assert result is True
-
-
-def test_on_16():
-    """
-    An event cannot be None.
-    """
-    emitter = Emitter()
-    with pytest.raises(ValueError):
-        result = emitter.on(None, callable)
 
 
 # emitter.emit()
 
 
-def test_emit_1():
+def test_emit__1():
     """
-    This method triggers all the listeners for the event.
+    All the listeners of an event must be triggered.
     """
     emitter = Emitter()
     l = []
@@ -185,9 +129,9 @@ def test_emit_1():
     assert len(l) == 3
 
 
-def test_emit_2():
+def test_emit__2():
     """
-    This method triggers listener in order of insertion.
+    Listeners are triggered in order of insertion.
     """
     emitter = Emitter()
     l = []
@@ -198,9 +142,9 @@ def test_emit_2():
     assert l == [1, 2, 3]
 
 
-def test_emit_3():
+def test_emit__3():
     """
-    This method only triggers the listeners of the specified event.
+    Only the listeners of the specified event should be triggered.
     """
     emitter = Emitter()
     l = []
@@ -210,18 +154,18 @@ def test_emit_3():
     assert l == [1]
 
 
-def test_emit_4():
+def test_emit__4():
     """
-    This method returns False if trying to emit a non-existent event.
+    Returns False when emitting a non-existent event.
     """
     emitter = Emitter()
     result = emitter.emit("event")
     assert result is False
 
 
-def test_emit_5():
+def test_emit__5():
     """
-    This method returns True when the event is emitted.
+    Returns True when emitting an event.
     """
     emitter = Emitter()
     emitter.on("event", callable)
@@ -229,9 +173,9 @@ def test_emit_5():
     assert result is True
 
 
-def test_emit_6():
+def test_emit__6():
     """
-    *args and **kwargs args given to emit() are passed to the listeners.
+    Should pass *args and **kwargs to the listeners.
     """
     emitter = Emitter()
     params = []
@@ -247,9 +191,9 @@ def test_emit_6():
     assert params == [10, 20, None, "hello"]
 
 
-def test_emit_7():
+def test_emit__7():
     """
-    The emitter can emit the False event.
+    False event can be emitted.
     """
     emitter = Emitter()
     l = []
@@ -258,22 +202,29 @@ def test_emit_7():
     assert 1 in l
 
 
-def test_emit_8():
+def test_emit__8():
     """
-    Negative credit listeners can be triggered infinitely.
+    True event can be emitted.
     """
     emitter = Emitter()
     l = []
-    emitter.on("event", lambda: l.append(1), -22)
-    emitter.emit("event")
-    emitter.emit("event")
-    emitter.emit("event")
-    assert len(l) == 3
+    emitter.on(True, lambda: l.append(1))
+    emitter.emit(True)
+    assert 1 in l
 
 
-def test_emit_9():
+def test_emit__9():
     """
-    'error' event is emitted when listener throws exception.
+    Emitting None event returns False.
+    """
+    emitter = Emitter()
+
+    assert emitter.emit(None) is False
+
+
+def test_emit__10():
+    """
+    Emitter.ERROR event is emitted when listener raises exception.
     """
     emitter = Emitter()
 
@@ -282,253 +233,168 @@ def test_emit_9():
 
     l = []
     emitter.on("thing", listener)
-    emitter.on("error", lambda err: l.append(err))
+    emitter.on(Emitter.ERROR, lambda err: l.append(1))
     emitter.emit("thing")
     assert len(l) == 1
 
 
-def test_emit_10():
+def test_emit__11():
     """
-    Credit is updated even if listener throws exception.
-    """
-    emitter = Emitter()
-
-    def listener(*args, **kwargs):
-        raise Exception()
-
-    emitter.on("event", listener, 5)
-    emitter.emit("event")
-    assert emitter.get("event", listener) == 4
-
-
-def test_emit_11():
-    """
-    If error listeners throw exceptions, avoid infinite recursion.
+    If error listener throws exception, avoid infinite recursion.
     """
     emitter = Emitter()
 
+    counter = []
+
     def listener(*args, **kwargs):
+        counter.append(1)
         raise Exception()
 
     emitter.on("event", listener)
-    emitter.on("error", listener)
+    emitter.on(Emitter.ERROR, listener)
 
     with pytest.raises(Exception):
         emitter.emit("event")
 
-
-def test_emit_12():
-    """
-    When a listener have no more credits, delete it.
-    """
-    emitter = Emitter()
-    emitter.on("event", callable, 3)
-    emitter.emit("event")
-    emitter.emit("event")
-    emitter.emit("event")
-    assert callable not in emitter.get("event")
+    assert len(counter) == 2
 
 
-def test_emit_13():
+# emitter.events()
+
+
+def test_events__1():
     """
-    No errors should be triggered when a listener have no more credit.
+    Returns a empty set if no events registered.
     """
     emitter = Emitter()
-    l = []
-    emitter.on("event", str, 2)
-    emitter.on("error", lambda: l.append(1))
-    emitter.emit("event")
-    emitter.emit("event")
-    emitter.emit("event")
-    assert len(l) == 0
+    assert emitter.events() == set()
 
 
-def test_emit_14():
+def test_events__2():
     """
-    Returns False if trying to emit None.
-    """
-    emitter = Emitter()
-    assert emitter.emit(None) is False
-
-
-# emitter.get()
-
-
-def test_get_1():
-    """
-    Without args, when no events registered, the method returns an empty set.
-    """
-    emitter = Emitter()
-    assert emitter.get() == set()
-
-
-def test_get_2():
-    """
-    Without args, the method returns a set containing the events.
+    Returns a set containing all the registered events.
     """
     emitter = Emitter()
     emitter.on("event1", callable)
     emitter.on("event2", callable)
     emitter.on("event3", callable)
-    events = emitter.get()
+    events = emitter.events()
     assert events == {"event1", "event2", "event3"}
 
 
-def test_get_3():
+def test_events__3():
     """
-    Retrieving the False event.
+    False event can be retrieved.
     """
     emitter = Emitter()
     emitter.on(False, callable)
-    assert False in emitter.get()
+    assert False in emitter.events()
 
 
-def test_get_4():
+def test_events__4():
     """
-    When passing an event that doesn't exists, returns an empty list.
-    """
-    emitter = Emitter()
-    assert emitter.get("unknown") == []
-
-
-def test_get_5():
-    """
-    When passing an event, returns a list containing all its listeners.
+    True event can be retrieved.
     """
     emitter = Emitter()
-    emitter.on("event", callable, 10)
-    emitter.on("event", list, 42)
+    emitter.on(True, callable)
+    assert True in emitter.events()
 
-    listeners = emitter.get("event")
+
+def test_events__5():
+    """
+    Should not return the original object, but a copy.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    assert emitter.events() is not emitter.events()
+
+
+# emitter.listeners()
+
+
+def test_listeners__1():
+    """
+    Returns an empty list when asking for an unknown event.
+    """
+    emitter = Emitter()
+
+    assert isinstance(emitter.listeners(""), list)
+    assert emitter.listeners("") == []
+
+
+def test_listeners__2():
+    """
+    Returns a list containing all the listeners of the given event.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    emitter.on("event", list)
+
+    listeners = emitter.listeners("event")
 
     assert isinstance(listeners, list)
     assert listeners == [callable, list]
 
 
-def test_get_6():
+def test_listeners__3():
     """
-    Check that the insertion order of the listeners is conserved.
+    The insertion order of the listeners should be conserved.
     """
     emitter = Emitter()
     emitter.on("raccoon", bool)
     emitter.on("raccoon", callable)
     emitter.on("raccoon", dict)
 
-    listeners = emitter.get("raccoon")
+    listeners = emitter.listeners("raccoon")
 
-    assert isinstance(listeners, list)
     assert listeners == [bool, callable, dict]
 
 
-def test_get_7():
-    """
-    Listeners insertion order should be conserved even after update.
-    """
-    emitter = Emitter()
-
-    emitter.on("raccoon", bool)
-    emitter.on("raccoon", callable, 10)
-    emitter.on("raccoon", dict)
-
-    # update callable, setting credit from 10 to -1 (infinity)
-    emitter.on("raccoon", callable)
-
-    # update bool, setting credit from infinity to 10
-    emitter.on("raccoon", bool, 10)
-
-    listeners = emitter.get("raccoon")
-
-    assert list(listeners) == [bool, callable, dict]
-
-
-def test_get_8():
-    """
-    Even if no listeners for an event, an OrderedDict is returned.
-    """
-    emitter = Emitter()
-    result = emitter.get("unknown")
-    assert isinstance(result, list)
-
-
-def test_get_9():
+def test_listeners__4():
     """
     Get the listeners for the False event.
     """
     emitter = Emitter()
     emitter.on(False, callable)
-    assert callable in emitter.get(False)
+    assert callable in emitter.listeners(False)
 
 
-def test_get_10():
+def test_listeners__5():
     """
-    Get without args returns all the events.
-    """
-    emitter = Emitter()
-    emitter.on("event1", callable)
-    emitter.on("event2", bool, 3)
-    result = emitter.get()
-
-    assert result == {"event1", "event2"}
-
-
-def test_get_11():
-    """
-    Get all events does not returns shared object.
+    Get the listeners for the True event.
     """
     emitter = Emitter()
-    emitter.on("event1", callable)
-    result1 = emitter.get()
-    result2 = emitter.get()
-    assert result1 is not result2
+    emitter.on(True, callable)
+    assert callable in emitter.listeners(True)
 
 
-def test_get_12():
+def test_listeners__6():
     """
-    Get listeners of an existing event does not returns shared object.
+    Should not return the original object, but a copy.
     """
     emitter = Emitter()
-    emitter.on("event1", callable)
-    result1 = emitter.get("event1")
-    result2 = emitter.get("event1")
-    assert result1 is not result2
-
-
-def test_get_13():
-    """
-    Getting the listeners of an unknown event does not return shared obj.
-    """
-    emitter = Emitter()
-    result1 = emitter.get("unknown")
-    result2 = emitter.get("unknown")
-    assert result1 is not result2
-
-
-def test_get_14():
-    """
-    Getting the credit of a listener.
-    """
-    emitter = Emitter()
-    emitter.on("event", callable, 4)
-    assert emitter.get("event", callable) == 4
+    emitter.on("event", callable)
+    assert emitter.listeners("event") is not emitter.listeners("event")
 
 
 # emitter.off()
 
 
-def test_off_1():
+def test_off__1():
     """
-    Called without arg, it removes all the events.
+    Called with no arguments, it removes all the events.
     """
     emitter = Emitter()
     emitter.on("raccoon", callable)
     emitter.on("fox", callable)
     emitter.off()
-    assert emitter.get() == set()
+    assert emitter.events() == set()
 
 
-def test_off_2():
+def test_off__2():
     """
-    When called with 1 arg, it removes only the specified event.
+    When called with 1 argument, it removes only the listeners of the
+    specified event.
     """
     emitter = Emitter()
     emitter.on("event", callable)
@@ -537,57 +403,84 @@ def test_off_2():
     emitter.on("raccoon", str)
     emitter.off("event")
 
-    assert emitter.get("event") == []
-    assert callable in emitter.get("raccoon")
-    assert str in emitter.get("raccoon")
+    assert emitter.listeners("event") == []
+    assert callable in emitter.listeners("raccoon")
+    assert str in emitter.listeners("raccoon")
 
 
-def test_off_3():
+def test_off__3():
     """
-    Removing a listener.
+    Called with 2 arguments, it removes the specified listener of the specified
+    event.
     """
     emitter = Emitter()
     emitter.on("event", callable)
     emitter.on("event", str)
     emitter.off("event", callable)
-    listeners = emitter.get("event")
+    listeners = emitter.listeners("event")
     assert callable not in listeners
     assert str in listeners
 
 
-def test_off_4():
+def test_off__4():
     """
-    Removing the False event.
+    False event can be removed.
     """
     emitter = Emitter()
     emitter.on(False, callable)
-    assert False in emitter.get()
+    assert False in emitter.events()
 
     emitter.off(False)
-    assert False not in emitter.get()
+    assert False not in emitter.events()
 
 
-def test_off_5():
+def test_off__5():
     """
-    Remove a listener of the False event.
+    True event can be removed.
+    """
+    emitter = Emitter()
+    emitter.on(True, callable)
+    assert True in emitter.events()
+
+    emitter.off(True)
+    assert True not in emitter.events()
+
+
+def test_off__6():
+    """
+    A listener of the False event can be removed.
     """
     emitter = Emitter()
     emitter.on(False, callable)
-    assert callable in emitter.get(False)
+    assert callable in emitter.listeners(False)
 
     emitter.off(False, callable)
-    assert callable not in emitter.get(False)
+    assert callable not in emitter.listeners(False)
 
 
-def test_off_6():
+def test_off__7():
+    """
+    A listener of the True event can be removed.
+    """
+    emitter = Emitter()
+    emitter.on(True, callable)
+    assert callable in emitter.listeners(True)
+
+    emitter.off(True, callable)
+    assert callable not in emitter.listeners(True)
+
+
+def test_off__8():
     """
     Returns True if all events are deleted.
     """
     emitter = Emitter()
+    emitter.on("event1", callable)
+    emitter.on("event2", callable)
     assert emitter.off() is True
 
 
-def test_off_7():
+def test_off__9():
     """
     Returns False if trying to remove a non-existent event.
     """
@@ -595,16 +488,16 @@ def test_off_7():
     assert emitter.off("unknown") is False
 
 
-def test_off_8():
+def test_off__10():
     """
-    Returns True if the event has been deleted.
+    Returns True if the specified event has been deleted.
     """
     emitter = Emitter()
     emitter.on("event", callable)
     assert emitter.off("event") is True
 
 
-def test_off_9():
+def test_off__11():
     """
     Returns False if trying to detach a non-existent listener.
     """
@@ -613,7 +506,7 @@ def test_off_9():
     assert emitter.off("event", bool) is False
 
 
-def test_off_10():
+def test_off__12():
     """
     Returns True if the specified listener has been detached.
     """

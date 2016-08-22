@@ -124,6 +124,8 @@ def test_on__10():
 
 
 # TODO
+# check that listener is detached
+# check that event is cleaned if no more listeners
 
 
 # emitter.emit()
@@ -526,4 +528,16 @@ def test_off__12():
     emitter = Emitter()
     emitter.on("event", callable)
     assert emitter.off("event", callable) is True
+
+
+def test_off__13():
+    """
+    Delete the event if no more listeners.
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    assert "event" in emitter.events()
+
+    emitter.off("event", callable)
+    assert emitter.events() == set()
 

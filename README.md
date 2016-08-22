@@ -17,8 +17,8 @@ from emitter import Emitter
 
 
 emitter = Emitter()
-emitter.on("birthday", print)
 
+emitter.on("birthday", print)
 emitter.emit("birthday", "Frank", 37)
 ```
 

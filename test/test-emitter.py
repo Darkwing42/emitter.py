@@ -112,6 +112,14 @@ def test_on__9():
     assert len(l) == 3
 
 
+def test_on__10():
+    """
+    Returns true when event has been successfully registered.
+    """
+    emitter = Emitter()
+    assert emitter.on("event", callable) is True
+
+
 # emitter.once()
 
 

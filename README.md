@@ -85,16 +85,13 @@ emitter.clear("click", listener1, error_handler)
 ### `emitter.get([event][, listener])`
 
 ```python
-# get all the events
-emitter.get()
+emitter.get()  # get all the events
 # => {event1, event2}
 
-# get all "click" listeners
-emitter.get("click")
+emitter.get("click")  # get all "click" listeners
 # => [listener1, listener2]
 
-# get the error handler
-emitter.clear("click", listener1)
+emitter.clear("click", listener1)  # get the error handler
 # => error_handler
 ```
 
@@ -122,12 +119,10 @@ emitter.listeners(event1)
 ### `emitter.on_error([error_handler])`
 
 ```python
-# get error handler
-emitter.on_error()
+emitter.on_error()  # get error handler
 # => error_handler
 
-# set a new error handler
-emitter.on_error(error_handler)
+emitter.on_error(error_handler)  # set a new error handler
 ```
 
 See [Error Handling][error-handling].

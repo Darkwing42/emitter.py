@@ -120,12 +120,81 @@ def test_on__10():
     assert emitter.on("event", callable) is True
 
 
+def test_on__11():
+    """
+    Returns true when event has been successfully registered.
+    """
+    emitter = Emitter()
+    assert emitter.on("event", callable) is True
+
+
+def test_on__12():
+    """
+    Allow updating an event from on() to once().
+    """
+    emitter = Emitter()
+    emitter.once("event", callable)
+    emitter.on("event", callable)
+
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
+
+    assert callable in emitter.listeners("event")
+
+
 # emitter.once()
 
 
-# TODO
-# check that listener is detached
-# check that event is cleaned if no more listeners
+def test_once__1():
+    """
+    Listener can be called only once.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.once("event", lambda x: l.append(1))
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
+
+    assert len(l) == 1
+
+
+def test_once__2():
+    """
+    Listener should be removed after call.
+    """
+    emitter = Emitter()
+    emitter.once("event", callable)
+    emitter.on("event", bool)
+    emitter.emit("event")
+
+    assert callable not in emitter.listeners("event")
+    assert bool in emitter.events()
+
+
+def test_once__3():
+    """
+    Event should be cleaned if no more listeners.
+    """
+    emitter = Emitter()
+    emitter.once("event", callable)
+    emitter.emit("event")
+
+    assert emitter.events() == set()
+
+
+def test_once__4():
+    """
+    Allow updating an event from once() to on().
+    """
+    emitter = Emitter()
+    emitter.on("event", callable)
+    emitter.once("event", callable)
+
+    emitter.emit("event")
+
+    assert callable not in emitter.listeners("event")
 
 
 # emitter.emit()

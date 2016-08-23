@@ -4,6 +4,10 @@ from emitter import Emitter
 
 # Emitter()
 
+# TODO test when error handler raises exception (re-raised)
+# TODO test that ERROR, ATTACH & DETACH handlers get their own event
+# TODO exception cascade: test that "once" listeners are deleted even if ...
+# TODO ... exception has been raised
 
 # emitter.on()
 
@@ -114,7 +118,7 @@ def test_on__9():
 
 def test_on__10():
     """
-    Returns true when event has been successfully registered.
+    Returns True when event has been successfully registered.
     """
     emitter = Emitter()
     assert emitter.on("event", callable) is True
@@ -122,7 +126,7 @@ def test_on__10():
 
 def test_on__11():
     """
-    Returns true when event has been successfully registered.
+    Returns True when event has been successfully registered.
     """
     emitter = Emitter()
     assert emitter.on("event", callable) is True
@@ -150,11 +154,11 @@ def test_on__13():
     emitter = Emitter()
     l = []
 
-    emitter.on(Emitter.ATTACH, lambda: l.append(1))
+    emitter.on(Emitter.ATTACH, lambda event, listener: l.append(1))
     emitter.on("event", callable)
     emitter.on("event", bool)
 
-    assert len(l) == 2
+    assert len(l) == 3
 
 
 def test_on__14():
@@ -164,11 +168,11 @@ def test_on__14():
     emitter = Emitter()
     l = []
 
-    emitter.on(Emitter.ATTACH, lambda: l.append(1))
+    emitter.on(Emitter.ATTACH, lambda event, listener: l.append(1))
     emitter.on("event", callable)
     emitter.on("event", callable)
 
-    assert len(l) == 2
+    assert len(l) == 3
 
 
 # emitter.once()
@@ -180,7 +184,7 @@ def test_once__1():
     """
     emitter = Emitter()
     l = []
-    emitter.once("event", lambda x: l.append(1))
+    emitter.once("event", lambda: l.append(1))
     emitter.emit("event")
     emitter.emit("event")
     emitter.emit("event")
@@ -198,7 +202,7 @@ def test_once__2():
     emitter.emit("event")
 
     assert callable not in emitter.listeners("event")
-    assert bool in emitter.events()
+    assert bool in emitter.listeners("event")
 
 
 def test_once__3():
@@ -649,7 +653,7 @@ def test_off__14():
     emitter = Emitter()
     l = []
 
-    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
     emitter.on("event", callable)
     emitter.off("event", callable)
 
@@ -663,7 +667,7 @@ def test_off__15():
     emitter = Emitter()
     l = []
 
-    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
     emitter.off("event", callable)
 
     assert len(l) == 0
@@ -676,7 +680,7 @@ def test_off__16():
     emitter = Emitter()
     l = []
 
-    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
     emitter.on("event", callable)
     emitter.on("event", bool)
 
@@ -692,7 +696,7 @@ def test_off__17():
     emitter = Emitter()
     l = []
 
-    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
     emitter.on("event1", callable)
     emitter.on("event1", bool)
     emitter.on("event2", callable)
@@ -700,6 +704,6 @@ def test_off__17():
 
     emitter.off()
 
-    assert len(l) == 4
+    assert len(l) == 5
 
 

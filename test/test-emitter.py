@@ -644,7 +644,7 @@ def test_off__13():
 
 def test_off__14():
     """
-    Emitter.DETACH event is triggered.
+    Emitter.DETACH event is triggered when removing a listener.
     """
     emitter = Emitter()
     l = []

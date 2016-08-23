@@ -5,6 +5,7 @@ __version__ = "6.0.0"
 
 
 class Emitter:
+    # special events
     ERROR = object()
     ATTACH = object()
     DETACH = object()
@@ -88,9 +89,11 @@ class Emitter:
         return True
 
     def events(self):
+        # return a new set, containing events
         return set(self._events.keys())
 
     def listeners(self, event):
+        # return a new list, containing listeners of the given event
         return list(self._events.get(event, []))
 
     def emit(self, event, *args, **kwargs):

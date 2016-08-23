@@ -143,6 +143,34 @@ def test_on__12():
     assert callable in emitter.listeners("event")
 
 
+def test_on__13():
+    """
+    Emitter.ATTACH event is triggered.
+    """
+    emitter = Emitter()
+    l = []
+
+    emitter.on(Emitter.ATTACH, lambda: l.append(1))
+    emitter.on("event", callable)
+    emitter.on("event", bool)
+
+    assert len(l) == 2
+
+
+def test_on__14():
+    """
+    Emitter.ATTACH event is triggered even on listener updates.
+    """
+    emitter = Emitter()
+    l = []
+
+    emitter.on(Emitter.ATTACH, lambda: l.append(1))
+    emitter.on("event", callable)
+    emitter.on("event", callable)
+
+    assert len(l) == 2
+
+
 # emitter.once()
 
 
@@ -324,23 +352,26 @@ def test_emit__10():
 
 def test_emit__11():
     """
-    If error listener throws exception, avoid infinite recursion.
+    Emitter.ERROR event handler gets error, *args and **kwargs.
     """
     emitter = Emitter()
-
-    counter = []
+    l = []
 
     def listener(*args, **kwargs):
-        counter.append(1)
         raise Exception()
 
-    emitter.on("event", listener)
-    emitter.on(Emitter.ERROR, listener)
+    def handler(err, *args, **kwargs):
+        l.append(err)
+        l.append(args)
+        l.append(kwargs)
 
-    with pytest.raises(Exception):
-        emitter.emit("event")
+    emitter.on("thing", listener)
+    emitter.on(Emitter.ERROR, handler)
+    emitter.emit("thing", 10, b=20)
 
-    assert len(counter) == 2
+    assert isinstance(l[0], Exception)
+    assert l[1][0] == 10
+    assert l[2]["b"] == 20
 
 
 # emitter.events()
@@ -609,4 +640,66 @@ def test_off__13():
 
     emitter.off("event", callable)
     assert emitter.events() == set()
+
+
+def test_off__14():
+    """
+    Emitter.DETACH event is triggered.
+    """
+    emitter = Emitter()
+    l = []
+
+    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on("event", callable)
+    emitter.off("event", callable)
+
+    assert len(l) == 1
+
+
+def test_off__15():
+    """
+    Emitter.DETACH event is not triggered if listener does not exists.
+    """
+    emitter = Emitter()
+    l = []
+
+    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.off("event", callable)
+
+    assert len(l) == 0
+
+
+def test_off__16():
+    """
+    Emitter.DETACH is triggered for each listener.
+    """
+    emitter = Emitter()
+    l = []
+
+    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on("event", callable)
+    emitter.on("event", bool)
+
+    emitter.off("event")
+
+    assert len(l) == 2
+
+
+def test_off__17():
+    """
+    Emitter.DETACH is triggered for each listener of each event.
+    """
+    emitter = Emitter()
+    l = []
+
+    emitter.on(Emitter.DETACH, lambda: l.append(1))
+    emitter.on("event1", callable)
+    emitter.on("event1", bool)
+    emitter.on("event2", callable)
+    emitter.on("event2", bool)
+
+    emitter.off()
+
+    assert len(l) == 4
+
 

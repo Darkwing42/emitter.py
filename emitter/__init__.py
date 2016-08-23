@@ -106,6 +106,8 @@ class Emitter:
             return False
 
         # trigger each listener attached to the event
+        # we iterate on a copy to be allowed to mutate the OrderedDict during
+        # iteration
         for listener in list(self._events[event]):
             # trigger the current listener
             try:

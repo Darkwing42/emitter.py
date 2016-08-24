@@ -4,7 +4,6 @@ from emitter import Emitter
 
 # Emitter()
 
-# TODO test when error handler raises exception (re-raised)
 # TODO test that ERROR, ATTACH & DETACH handlers get their own event
 # TODO exception cascade: test that "once" listeners are deleted even if ...
 # TODO ... exception has been raised
@@ -173,6 +172,32 @@ def test_on__14():
     emitter.on("event", callable)
 
     assert len(l) == 3
+
+
+def test_on__15():
+    """
+    Emitter.ATTACH listener gets the event of its own registration.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.on(Emitter.ATTACH, lambda event, listener: l.append(1))
+    assert len(l) == 1
+
+
+def test_on__16():
+    """
+    Emitter.ATTACH listener gets the event and the listener.
+    """
+    emitter = Emitter()
+    l = []
+
+    def callback(event, listener):
+        l.append(event)
+        l.append(listener)
+
+    emitter.on(Emitter.ATTACH, callback)
+    assert l[0] == Emitter.ATTACH
+    assert l[1] == callback
 
 
 # emitter.once()
@@ -729,5 +754,3 @@ def test_off__17():
     emitter.off()
 
     assert len(l) == 5
-
-

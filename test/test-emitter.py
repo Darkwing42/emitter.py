@@ -378,6 +378,30 @@ def test_emit__11():
     assert l[2]["b"] == 20
 
 
+def test_emit__12():
+    """
+    If Emitter.ERROR event handler raises exception, it is re-raised.
+    Emitter does not emit Emitter.ERROR event.
+    """
+    emitter = Emitter()
+    l = []
+
+    def listener(*args, **kwargs):
+        raise Exception()
+
+    def handler(err, *args, **kwargs):
+        l.append(1)
+        raise StopIteration()
+
+    emitter.on(Emitter.ERROR, handler)
+    emitter.on("event", listener)
+
+    with pytest.raises(StopIteration):
+        emitter.emit("event")
+
+    assert len(l) == 1
+
+
 # emitter.events()
 
 

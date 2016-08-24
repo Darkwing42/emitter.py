@@ -4,9 +4,6 @@ from emitter import Emitter
 
 # Emitter()
 
-# TODO test that ERROR, ATTACH & DETACH handlers get their own event
-# TODO exception cascade: test that "once" listeners are deleted even if ...
-# TODO ... exception has been raised
 
 # emitter.on()
 
@@ -146,60 +143,6 @@ def test_on__12():
     assert callable in emitter.listeners("event")
 
 
-def test_on__13():
-    """
-    Emitter.ATTACH event is triggered.
-    """
-    emitter = Emitter()
-    l = []
-
-    emitter.on(Emitter.ATTACH, lambda event, listener: l.append(1))
-    emitter.on("event", callable)
-    emitter.on("event", bool)
-
-    assert len(l) == 3
-
-
-def test_on__14():
-    """
-    Emitter.ATTACH event is triggered even on listener updates.
-    """
-    emitter = Emitter()
-    l = []
-
-    emitter.on(Emitter.ATTACH, lambda event, listener: l.append(1))
-    emitter.on("event", callable)
-    emitter.on("event", callable)
-
-    assert len(l) == 3
-
-
-def test_on__15():
-    """
-    Emitter.ATTACH listener gets the event of its own registration.
-    """
-    emitter = Emitter()
-    l = []
-    emitter.on(Emitter.ATTACH, lambda event, listener: l.append(1))
-    assert len(l) == 1
-
-
-def test_on__16():
-    """
-    Emitter.ATTACH listener gets the event and the listener.
-    """
-    emitter = Emitter()
-    l = []
-
-    def callback(event, listener):
-        l.append(event)
-        l.append(listener)
-
-    emitter.on(Emitter.ATTACH, callback)
-    assert l[0] == Emitter.ATTACH
-    assert l[1] == callback
-
-
 # emitter.once()
 
 
@@ -252,6 +195,22 @@ def test_once__4():
     emitter.emit("event")
 
     assert callable not in emitter.listeners("event")
+
+
+def test_once__5():
+    """
+    One time listeners should be removed even if an error happens.
+    """
+    emitter = Emitter()
+
+    def listener(*args, **kwargs):
+        raise Exception()
+
+    emitter.once("event", listener)
+
+    emitter.emit("event")
+
+    assert listener not in emitter.listeners("event")
 
 
 # emitter.emit()
@@ -361,70 +320,6 @@ def test_emit__9():
     emitter = Emitter()
 
     assert emitter.emit(None) is False
-
-
-def test_emit__10():
-    """
-    Emitter.ERROR event is emitted when listener raises exception.
-    """
-    emitter = Emitter()
-
-    def listener(*args, **kwargs):
-        raise Exception()
-
-    l = []
-    emitter.on("thing", listener)
-    emitter.on(Emitter.ERROR, lambda err: l.append(1))
-    emitter.emit("thing")
-    assert len(l) == 1
-
-
-def test_emit__11():
-    """
-    Emitter.ERROR event handler gets error, *args and **kwargs.
-    """
-    emitter = Emitter()
-    l = []
-
-    def listener(*args, **kwargs):
-        raise Exception()
-
-    def handler(err, *args, **kwargs):
-        l.append(err)
-        l.append(args)
-        l.append(kwargs)
-
-    emitter.on("thing", listener)
-    emitter.on(Emitter.ERROR, handler)
-    emitter.emit("thing", 10, b=20)
-
-    assert isinstance(l[0], Exception)
-    assert l[1][0] == 10
-    assert l[2]["b"] == 20
-
-
-def test_emit__12():
-    """
-    If Emitter.ERROR event handler raises exception, it is re-raised.
-    Emitter does not emit Emitter.ERROR event.
-    """
-    emitter = Emitter()
-    l = []
-
-    def listener(*args, **kwargs):
-        raise Exception()
-
-    def handler(err, *args, **kwargs):
-        l.append(1)
-        raise StopIteration()
-
-    emitter.on(Emitter.ERROR, handler)
-    emitter.on("event", listener)
-
-    with pytest.raises(StopIteration):
-        emitter.emit("event")
-
-    assert len(l) == 1
 
 
 # emitter.events()
@@ -694,63 +589,3 @@ def test_off__13():
     emitter.off("event", callable)
     assert emitter.events() == set()
 
-
-def test_off__14():
-    """
-    Emitter.DETACH event is triggered when removing a listener.
-    """
-    emitter = Emitter()
-    l = []
-
-    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
-    emitter.on("event", callable)
-    emitter.off("event", callable)
-
-    assert len(l) == 1
-
-
-def test_off__15():
-    """
-    Emitter.DETACH event is not triggered if listener does not exists.
-    """
-    emitter = Emitter()
-    l = []
-
-    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
-    emitter.off("event", callable)
-
-    assert len(l) == 0
-
-
-def test_off__16():
-    """
-    Emitter.DETACH is triggered for each listener.
-    """
-    emitter = Emitter()
-    l = []
-
-    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
-    emitter.on("event", callable)
-    emitter.on("event", bool)
-
-    emitter.off("event")
-
-    assert len(l) == 2
-
-
-def test_off__17():
-    """
-    Emitter.DETACH is triggered for each listener of each event.
-    """
-    emitter = Emitter()
-    l = []
-
-    emitter.on(Emitter.DETACH, lambda err, *args, **kwargs: l.append(1))
-    emitter.on("event1", callable)
-    emitter.on("event1", bool)
-    emitter.on("event2", callable)
-    emitter.on("event2", bool)
-
-    emitter.off()
-
-    assert len(l) == 5

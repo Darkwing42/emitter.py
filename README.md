@@ -1,6 +1,6 @@
 # emitter.py
 
-A simple event emitter for Python 3.
+A neat event emitter for Python 3.
 
 ```sh
 $ pip install emitter.py

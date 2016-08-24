@@ -216,3 +216,29 @@ def test_error__3():
 
     assert len(l) == 1
 
+
+def test_error__4():
+    """
+    One time ERROR listener is removed even if it raises exception.
+    """
+    emitter = Emitter()
+    l = []
+
+    def listener(*args, **kwargs):
+        raise Exception()
+
+    def handler(err, *args, **kwargs):
+        l.append(1)
+        raise StopIteration()
+
+    emitter.once(Emitter.ERROR, handler)
+    emitter.on("event", listener)
+
+    assert len(emitter.listeners(Emitter.ERROR)) == 1
+
+    with pytest.raises(StopIteration):
+        emitter.emit("event")
+
+    assert len(emitter.listeners(Emitter.ERROR)) == 0
+
+

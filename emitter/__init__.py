@@ -35,14 +35,23 @@ class Emitter:
         return True
 
     def once(self, event, listener):
-        # register the listener through the standard method
-        result = self.on(event, listener)
+        # sanitize arguments types and values
 
-        if not result:
-            return result
+        if event is None:
+            raise ValueError("event cannot be None")
 
-        # update the "once" setting of the listener to True
+        if not callable(listener):
+            raise TypeError("listener must be callable")
+
+        # if the event doesn't exists yet, initialize it
+        if event not in self._events:
+            self._events[event] = collections.OrderedDict()
+
+        # add the listener to the event
         self._events[event].update({listener: {"once": True}})
+
+        # emit attach event
+        self.emit(Emitter.ATTACH, event, listener)
 
         return True
 

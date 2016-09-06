@@ -35,11 +35,12 @@ class Emitter:
         if event not in self._events:
             self._events[event] = collections.OrderedDict()
 
+        # emit attach event
+        # after event setup, before listener update
+        self.emit(Emitter.ATTACH, event, listener)
+
         # add listener to the event
         self._events[event].update({listener: {"once": False}})
-
-        # emit attach event
-        self.emit(Emitter.ATTACH, event, listener)
 
         return True
 
@@ -56,11 +57,12 @@ class Emitter:
         if event not in self._events:
             self._events[event] = collections.OrderedDict()
 
+        # emit attach event
+        # after event setup, before listener update
+        self.emit(Emitter.ATTACH, event, listener)
+
         # add the listener to the event
         self._events[event].update({listener: {"once": True}})
-
-        # emit attach event
-        self.emit(Emitter.ATTACH, event, listener)
 
         return True
 
@@ -94,11 +96,12 @@ class Emitter:
         if self._events[event].get(listener) is None:
             return False
 
-        # emit a detach event
-        self.emit(Emitter.DETACH, event, listener)
-
         # delete the listener after detach event has been sent
         del self._events[event][listener]
+
+        # emit a detach event
+        # after listener removal, before (eventual) event removal
+        self.emit(Emitter.DETACH, event, listener)
 
         # if no more listeners in the given event, delete it
         if len(self._events[event]) == 0:
@@ -127,6 +130,10 @@ class Emitter:
         # we iterate on a copy to be allowed to mutate the OrderedDict during
         # iteration
         for listener in list(self._events[event]):
+            # remove listener if it was a one-shot
+            if self._events[event][listener]["once"]:
+                self.off(event, listener)
+
             # build event context, to pass this metadata to the listener
             event_metadata = EventMetaData(
                 emitter=self,
@@ -148,9 +155,5 @@ class Emitter:
 
                 # emit the error event to trigger user's error handlers
                 self.emit(Emitter.ERROR, *args, **kwargs)
-            finally:
-                #  if emitter was "once", remove it
-                if self._events[event][listener]["once"]:
-                    self.off(event, listener)
 
         return True

@@ -124,7 +124,7 @@ class Emitter:
             except Exception as err:
                 # if exception has been raised by error handler, re-raise it
                 if event is Emitter.ERROR:
-                    raise err
+                    raise
 
                 # emit the error event
                 self.emit(Emitter.ERROR, err, *args, **kwargs)

@@ -78,7 +78,7 @@ class Emitter:
             self._events = {}
             return True
 
-        # if user tries to remove an non-existent event
+        # if user tries to remove a non-existent event
         if self._events.get(event) is None:
             return False
 
@@ -96,12 +96,11 @@ class Emitter:
         if self._events[event].get(listener) is None:
             return False
 
+        # emit a detach event
+        self.emit(Emitter.DETACH, event, listener)
+
         # delete the listener after detach event has been sent
         del self._events[event][listener]
-
-        # emit a detach event
-        # after listener removal, before (eventual) event removal
-        self.emit(Emitter.DETACH, event, listener)
 
         # if no more listeners in the given event, delete it
         if len(self._events[event]) == 0:

@@ -1,7 +1,16 @@
 import collections
+import sys
 
 
 __version__ = "6.0.0"
+
+
+class EventMetaData:
+    def __init__(self, emitter=None, event=None, listener=None, error=None):
+        self.emitter = emitter
+        self.event = event
+        self.listener = listener
+        self.error = error
 
 
 class Emitter:
@@ -118,16 +127,27 @@ class Emitter:
         # we iterate on a copy to be allowed to mutate the OrderedDict during
         # iteration
         for listener in list(self._events[event]):
-            # trigger the current listener
+            # build event context, to pass this metadata to the listener
+            event_metadata = EventMetaData(
+                emitter=self,
+                event=event,
+                listener=listener)
+
+            # if we are handling an error
+            if event is Emitter.ERROR:
+                # adding exception info to the event metadata
+                event_metadata.error = sys.exc_info()
+
             try:
-                listener(*args, **kwargs)
-            except Exception as err:
-                # if exception has been raised by error handler, re-raise it
+                # trigger the current listener
+                listener(event_metadata, *args, **kwargs)
+            except Exception:
+                # if the exception occurred during error handling, stop here
                 if event is Emitter.ERROR:
                     raise
 
-                # emit the error event
-                self.emit(Emitter.ERROR, err, *args, **kwargs)
+                # emit the error event to trigger user's error handlers
+                self.emit(Emitter.ERROR, *args, **kwargs)
             finally:
                 #  if emitter was "once", remove it
                 if self._events[event][listener]["once"]:

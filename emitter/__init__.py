@@ -36,7 +36,7 @@ class Emitter:
             self._events[event] = collections.OrderedDict()
 
         # emit attach event
-        # after event setup, before listener update
+        # after event creation, but before attaching listener to the event
         self.emit(Emitter.ATTACH, event, listener)
 
         # add listener to the event

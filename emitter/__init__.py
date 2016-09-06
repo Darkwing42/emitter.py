@@ -96,7 +96,7 @@ class Emitter:
         if self._events[event].get(listener) is None:
             return False
 
-        # emit a detach event
+        # emit a detach event before detaching
         self.emit(Emitter.DETACH, event, listener)
 
         # delete the listener after detach event has been sent
@@ -129,10 +129,6 @@ class Emitter:
         # we iterate on a copy to be allowed to mutate the OrderedDict during
         # iteration
         for listener in list(self._events[event]):
-            # remove listener if it was a one-shot
-            if self._events[event][listener]["once"]:
-                self.off(event, listener)
-
             # build event context, to pass this metadata to the listener
             event_metadata = EventMetaData(
                 emitter=self,
@@ -154,5 +150,9 @@ class Emitter:
 
                 # emit the error event to trigger user's error handlers
                 self.emit(Emitter.ERROR, *args, **kwargs)
+            finally:
+                # remove listener if it was a one-shot
+                if self._events[event][listener]["once"]:
+                    self.off(event, listener)
 
         return True

@@ -37,7 +37,7 @@ class Emitter:
 
         # emit attach event
         # after event creation, but before attaching listener to the event
-        self.emit(Emitter.ATTACH, event, listener)
+        self.emit(Emitter.ATTACH, event, listener, once=False)
 
         # add listener to the event
         self._events[event].update({listener: {"once": False}})
@@ -59,7 +59,7 @@ class Emitter:
 
         # emit attach event
         # after event setup, before listener update
-        self.emit(Emitter.ATTACH, event, listener)
+        self.emit(Emitter.ATTACH, event, listener, once=True)
 
         # add the listener to the event
         self._events[event].update({listener: {"once": True}})

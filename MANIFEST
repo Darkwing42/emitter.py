@@ -3,3 +3,4 @@ setup.cfg
 setup.py
 emitter/__init__.py
 test/test-emitter.py
+test/test-error-handling.py

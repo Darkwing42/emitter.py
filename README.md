@@ -23,7 +23,7 @@ emitter.emit("event", "data1", "data2")
 
 ## API Overview
 
-* `emitter.on(event, listener, once=False): bool`
+* `emitter.on(event, listener[, once]): bool`
 * `emitter.once(event, listener): bool` 
 * `emitter.emit(event[, *args][, **kwargs]): bool`
 * `emitter.off([event][, listener]): bool`
@@ -31,7 +31,7 @@ emitter.emit("event", "data1", "data2")
 * `emitter.listeners(event): list`
 
 
-### `emitter.on(event, listener)`
+### `emitter.on(event, listener[, once])`
 
 ```python
 emitter.on("click", listener1)
@@ -44,7 +44,7 @@ emitter.on("click", listener2, True)  # triggered only once
 ```python
 emitter.once("click", listener)
 
-# shortcut for
+# equivalent
 emitter.on("click", listener, True)
 ```
 

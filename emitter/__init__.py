@@ -31,7 +31,8 @@ class Emitter:
         if event not in self._events:
             self._events[event] = collections.OrderedDict()
 
-        # add listener to the event
+        # add listener to the event (along with its configuration)
+        # update listener config if listener is already registered
         self._events[event].update({listener: {"once": once}})
 
         return True

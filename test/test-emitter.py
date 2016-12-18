@@ -10,7 +10,7 @@ from emitter import Emitter
 
 def test_on__1():
     """
-    None event raises an exception.
+    User cannot register a None event.
     """
     emitter = Emitter()
 
@@ -50,16 +50,6 @@ def test_on__4():
 
 def test_on__5():
     """
-    A listener cannot be None.
-    """
-    emitter = Emitter()
-
-    with pytest.raises(TypeError):
-        emitter.on("event", None)
-
-
-def test_on__6():
-    """
     A listener must be callable.
     """
     emitter = Emitter()
@@ -68,7 +58,7 @@ def test_on__6():
         emitter.on("event", "")
 
 
-def test_on__7():
+def test_on__6():
     """
     Multiple events can be registered.
     """
@@ -79,6 +69,19 @@ def test_on__7():
 
     assert "event1" in emitter.events()
     assert "event2" in emitter.events()
+
+
+def test_on__7():
+    """
+    Multiple listeners can be registered for an event.
+    """
+    emitter = Emitter()
+
+    emitter.on("event", callable)
+    emitter.on("event", bool)
+
+    assert callable in emitter.listeners("event")
+    assert bool in emitter.listeners("event")
 
 
 def test_on__8():
@@ -99,36 +102,14 @@ def test_on__8():
 
 def test_on__9():
     """
-    Listeners can be called infinitely.
+    Returns True when event has been successfully registered.
     """
     emitter = Emitter()
-    l = []
-    emitter.on("event", lambda: l.append(1))
-
-    emitter.emit("event")
-    emitter.emit("event")
-    emitter.emit("event")
-
-    assert len(l) == 3
+    assert emitter.on("event", callable) is True
+    assert callable in emitter.listeners("event")
 
 
 def test_on__10():
-    """
-    Returns True when event has been successfully registered.
-    """
-    emitter = Emitter()
-    assert emitter.on("event", callable) is True
-
-
-def test_on__11():
-    """
-    Returns True when event has been successfully registered.
-    """
-    emitter = Emitter()
-    assert emitter.on("event", callable) is True
-
-
-def test_on__12():
     """
     Allow updating an event from on() to once().
     """
@@ -141,6 +122,20 @@ def test_on__12():
     emitter.emit("event")
 
     assert callable in emitter.listeners("event")
+
+
+def test_on__11():
+    """
+    One-shot listeners can be called only once.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.on("event", lambda: l.append(1), True)
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
+
+    assert len(l) == 1
 
 
 # emitter.once()
@@ -545,10 +540,10 @@ def test_off__8():
 
 def test_off__9():
     """
-    Returns False if trying to remove a non-existent event.
+    Returns True if trying to remove a non-existent event.
     """
     emitter = Emitter()
-    assert emitter.off("unknown") is False
+    assert emitter.off("unknown") is True
 
 
 def test_off__10():
@@ -562,11 +557,11 @@ def test_off__10():
 
 def test_off__11():
     """
-    Returns False if trying to detach a non-existent listener.
+    Returns True if trying to detach a non-existent listener.
     """
     emitter = Emitter()
     emitter.on("event", callable)
-    assert emitter.off("event", bool) is False
+    assert emitter.off("event", bool) is True
 
 
 def test_off__12():

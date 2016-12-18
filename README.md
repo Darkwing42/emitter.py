@@ -4,9 +4,6 @@ A neat event emitter for Python 3.
 
 ```sh
 $ pip install emitter.py
-
-# if several versions of Python installed
-$ pip3 install emitter.py
 ```
 
 
@@ -19,13 +16,14 @@ from emitter import Emitter
 emitter = Emitter()
 
 emitter.on("event", print)
+
 emitter.emit("event", "data1", "data2")
 ```
 
 
 ## API Overview
 
-* `emitter.on(event, listener): bool`
+* `emitter.on(event, listener, once=False): bool`
 * `emitter.once(event, listener): bool` 
 * `emitter.emit(event[, *args][, **kwargs]): bool`
 * `emitter.off([event][, listener]): bool`
@@ -37,6 +35,7 @@ emitter.emit("event", "data1", "data2")
 
 ```python
 emitter.on("click", listener1)
+emitter.on("click", listener2, True)  # triggered only once
 ```
 
 
@@ -44,6 +43,9 @@ emitter.on("click", listener1)
 
 ```python
 emitter.once("click", listener)
+
+# shortcut for
+emitter.on("click", listener, True)
 ```
 
 
@@ -94,31 +96,15 @@ emitter.listeners(event1)
 
 ### `Emitter.ERROR`
 
-```python
-def handler(err, *args, **kwargs):
-    ...
-
-emitter.on(Emitter.ERROR, handler)
-```
-
-
-### `Emitter.ATTACH`
+If a listener throws an error, the `Emitter.ERROR` event is emitted.
+You can register error handlers for this event to get notified.
+The first argument passed to the handler is the `sys.exc_info()` error.
 
 ```python
-def handler(event, listener):
+def error_handler(error, *args, **kwargs):
     ...
 
-emitter.on(Emitter.ATTACH, handler)
-```
-
-
-### `Emitter.DETACH`
-
-```python
-def handler(event, listener):
-    ...
-
-emitter.on(Emitter.DETACH, handler)
+emitter.on(Emitter.ERROR, error_handler)
 ```
 
 
@@ -141,7 +127,4 @@ $ py.test test/*
 $ py.test-3 test/*
 ```
 
-
-[error-handling]: #error-handling
 [pytest]: http://pytest.org/
-

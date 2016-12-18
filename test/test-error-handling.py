@@ -2,92 +2,107 @@ import pytest
 from emitter import Emitter
 
 
-def test_error__1():
-    """
-    ERROR event is emitted when listener raises exception.
-    """
-    emitter = Emitter()
-    l = []
+class Spy:
+    def __init__(self):
+        self.calls = 0
+        self.args = None
+        self.kwargs = None
 
-    def listener(*args, **kwargs):
+    def called(self, n):
+        return self.calls == n
+
+    def fail(self, *args, **kwargs):
+        self.__call__(*args, **kwargs)
         raise Exception()
 
-    emitter.on("thing", listener)
-    emitter.on(Emitter.ERROR, lambda err: l.append(1))
+    def __call__(self, *args, **kwargs):
+        self.calls += 1
+        self.args = args
+        self.kwargs = kwargs
 
-    emitter.emit("thing")
-    assert len(l) == 1
+
+@pytest.fixture
+def spy():
+    return Spy()
 
 
-def test_error__2():
+def raise_error(*args, **kwargs):
+    raise Exception()
+
+
+def test_error__1(spy):
     """
-    ERROR event handler gets error, *args and **kwargs.
+    ERROR event is emitted when some listener raises exception.
     """
     emitter = Emitter()
-    d = {}
+    emitter.on("event", raise_error)
+    emitter.on(Emitter.ERROR, spy)
 
-    def listener(*args, **kwargs):
-        raise Exception()
+    emitter.emit("event")
 
-    def handler(err, *args, **kwargs):
-        d["err"] = err
-        d["args"] = args
-        d["kwargs"] = kwargs
-
-    emitter.on("thing", listener)
-    emitter.on(Emitter.ERROR, handler)
-
-    emitter.emit("thing", 10, b=20)
-
-    assert isinstance(d["err"], Exception)
-    assert d["args"][0] == 10
-    assert d["kwargs"]["b"] == 20
+    assert spy.called(1)
 
 
-def test_error__3():
+def test_error__2(spy):
+    """
+    ERROR event handlers get error data (sys.exc_info), *args and **kwargs.
+    """
+    emitter = Emitter()
+
+    emitter.on("event", raise_error)
+    emitter.on(Emitter.ERROR, spy)
+
+    emitter.emit("event", 10, b=20)
+
+    assert spy.called(1)
+    assert isinstance(spy.args[0][1], Exception)
+    assert spy.args[1] == 10
+    assert spy.kwargs["b"] == 20
+
+
+def test_error__3(spy):
     """
     If ERROR event handler raises exception, it is re-raised, and Emitter
     does not emit the ERROR event.
     """
     emitter = Emitter()
-    l = []
 
-    def listener(*args, **kwargs):
-        raise Exception()
+    emitter.on("event", spy.fail)
+    emitter.on(Emitter.ERROR, spy.fail)
 
-    def handler(err, *args, **kwargs):
-        l.append(1)
-        raise StopIteration()
-
-    emitter.on(Emitter.ERROR, handler)
-    emitter.on("event", listener)
-
-    with pytest.raises(StopIteration):
+    with pytest.raises(Exception):
         emitter.emit("event")
 
-    assert len(l) == 1
+    assert spy.called(2)
 
 
-def test_error__4():
+def test_error__4(spy):
+    """
+    One time listener is removed even if it raises exception.
+    """
+    emitter = Emitter()
+
+    emitter.once("event", raise_error)
+
+    assert len(emitter.listeners("event")) == 1
+
+    emitter.emit("event")
+
+    assert len(emitter.listeners("event")) == 0
+
+
+def test_error__5(spy):
     """
     One time ERROR listener is removed even if it raises exception.
     """
     emitter = Emitter()
-    l = []
 
-    def listener(*args, **kwargs):
-        raise Exception()
-
-    def handler(err, *args, **kwargs):
-        l.append(1)
-        raise StopIteration()
-
-    emitter.once(Emitter.ERROR, handler)
-    emitter.on("event", listener)
+    emitter.once(Emitter.ERROR, spy.fail)
+    emitter.on("event", raise_error)
 
     assert len(emitter.listeners(Emitter.ERROR)) == 1
 
-    with pytest.raises(StopIteration):
+    with pytest.raises(Exception):
         emitter.emit("event")
 
     assert len(emitter.listeners(Emitter.ERROR)) == 0

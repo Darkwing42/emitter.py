@@ -106,6 +106,7 @@ def test_on__9():
     """
     emitter = Emitter()
     assert emitter.on("event", callable) is True
+    assert callable in emitter.listeners("event")
 
 
 def test_on__10():
@@ -121,6 +122,20 @@ def test_on__10():
     emitter.emit("event")
 
     assert callable in emitter.listeners("event")
+
+
+def test_on__11():
+    """
+    One-shot listeners can be called only once.
+    """
+    emitter = Emitter()
+    l = []
+    emitter.on("event", lambda: l.append(1), True)
+    emitter.emit("event")
+    emitter.emit("event")
+    emitter.emit("event")
+
+    assert len(l) == 1
 
 
 # emitter.once()

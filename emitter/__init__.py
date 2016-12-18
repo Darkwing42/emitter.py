@@ -96,7 +96,7 @@ class Emitter:
                 # trigger the current listener, which is a
                 # callback given by the user (it can raise any errors)
                 listener(*args, **kwargs)
-            except Exception:
+            except:
                 # if the exception occurred during error handling, stop here
                 if event is Emitter.ERROR:
                     raise

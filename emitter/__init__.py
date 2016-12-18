@@ -3,7 +3,7 @@ import sys
 
 
 # current version of emitter.py
-__version__ = "7.0.0"
+__version__ = "7.0.1"
 
 # need python 3 at least
 assert sys.version_info >= (3,)

@@ -55,7 +55,11 @@ def test_error__2(spy):
     emitter.emit("event", 10, b=20)
 
     assert spy.called(1)
+
+    # first arg passed to the error handler is a tuple with 3 elements
+    # see sys.exc_info()
     assert isinstance(spy.args[0][1], Exception)
+
     assert spy.args[1] == 10
     assert spy.kwargs["b"] == 20
 

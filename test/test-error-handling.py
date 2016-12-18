@@ -62,8 +62,8 @@ def test_error__2(spy):
 
 def test_error__3(spy):
     """
-    If ERROR event handler raises exception, it is re-raised, and Emitter
-    does not emit the ERROR event.
+    If error handler raises exception, it is re-raised, but not catched
+    by the emitter this time (no ERROR event this time).
     """
     emitter = Emitter()
 

@@ -25,6 +25,8 @@ class Emitter:
         if not callable(listener):
             raise TypeError("listener must be callable")
 
+        once = bool(once)
+
         # create event (if it does not exists yet)
         if event not in self._events:
             self._events[event] = collections.OrderedDict()

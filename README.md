@@ -97,7 +97,7 @@ emitter.listeners(event1)
 ### `Emitter.ERROR`
 
 If a listener throws an error, the `Emitter.ERROR` event is emitted.
-You can register error handlers for this event to get notified.
+You can register error handlers for this event to be notified.
 The first argument passed to the handler is the `sys.exc_info()` error.
 
 ```python

@@ -5,8 +5,9 @@ import sys
 # current version of emitter.py
 __version__ = "7.0.1"
 
-# need python 3 at least
-assert sys.version_info >= (3,)
+# python 3+ required
+assert sys.version_info >= (3,),\
+    "Your Python version is too old for emitter.py (Python 3+ required)."
 
 
 class Emitter:

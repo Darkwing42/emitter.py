@@ -11,7 +11,7 @@ class Spy:
     def called(self, n):
         return self.calls == n
 
-    def fail(self, *args, **kwargs):
+    def throw(self, *args, **kwargs):
         self.__call__(*args, **kwargs)
         raise Exception()
 
@@ -71,8 +71,8 @@ def test_error__3(spy):
     """
     emitter = Emitter()
 
-    emitter.on("event", spy.fail)
-    emitter.on(Emitter.ERROR, spy.fail)
+    emitter.on("event", spy.throw)
+    emitter.on(Emitter.ERROR, spy.throw)
 
     with pytest.raises(Exception):
         emitter.emit("event")
@@ -101,7 +101,7 @@ def test_error__5(spy):
     """
     emitter = Emitter()
 
-    emitter.once(Emitter.ERROR, spy.fail)
+    emitter.once(Emitter.ERROR, spy.throw)
     emitter.on("event", raise_error)
 
     assert len(emitter.listeners(Emitter.ERROR)) == 1

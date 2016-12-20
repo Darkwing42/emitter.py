@@ -23,6 +23,7 @@ class Spy:
 
 @pytest.fixture
 def spy():
+    # called before each test, creating a new Spy instance for the test
     return Spy()
 
 
